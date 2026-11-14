@@ -1,7 +1,7 @@
 # Estado de 34-gastos-compartidos-app
 
-- Fase: capa de datos lista (SQLite, repositorios, cliente de la API, sesion, servicios y sincronizacion). Todavia sin pantallas: la app solo muestra la pantalla inicial provisional.
-- Siguiente paso: pantallas (login y registro, mis grupos, crear grupo, unirse, grupo, registrar gasto), proveedor de sesion, gestos y sensores. Sigue pendiente A3 (Husky, CI y plantilla de PR).
+- Fase: capa de datos y primeras pantallas listas: sesion, login y registro, mis grupos, crear grupo y unirse. Faltan la pantalla de un grupo y registrar gasto. Todavia no se ha corrido en un telefono.
+- Siguiente paso: pantalla de un grupo (gastos, balance, pagos sugeridos), registrar gasto, gestos y sensores (QR en unirse). Sigue pendiente A3 (Husky, CI y plantilla de PR).
 - Fecha limite: sabado 2026-11-21.
 
 ## Que se hizo
@@ -19,6 +19,8 @@
 - 72 pruebas en total.
 - Se omitieron los repositorios en memoria que decia el plan: la entrega es unica y se fue directo a SQLite.
 
+- Pantallas (chat ejecutor, Sonnet): SessionProvider (usuario, signIn, signUp, signOut, loadUser al abrir, onSessionExpired vuelve al login); componentes base en src/components/base (Screen, AppText, AppButton, TextField, StateView); rutas protegidas con Stack.Protected en app/_layout.tsx; app/(auth)/login y registro (comparten src/components/AuthForm); app/(tabs)/index "Mis grupos" (lee SQLite con listLocalGroups, sincroniza con syncEverything, aviso "Sin conexion, mostrando datos guardados"); app/grupo/nuevo (muestra el codigo); app/unirse (404 muestra "Grupo no encontrado", boton de QR desactivado como lugar reservado). Se borraron app/index.tsx y tests/home.test.tsx. Ninguna pantalla hace SQL ni fetch. 110 pruebas, npm run check en verde, expo-doctor 20 de 20.
+
 ## Notas
 
 - npm audit avisa 28 vulnerabilidades (1 baja y 27 moderadas) que vienen de dependencias de Expo y de las herramientas. No se forzo ningun arreglo.
@@ -31,6 +33,11 @@
 Ninguno.
 
 ## Por verificar
+
+- Las pantallas solo se probaron con React Native Testing Library y expo-router de mentira. No se han visto en un telefono: falta comprobar que Stack.Protected redirige bien al iniciar y cerrar sesion.
+- Al crear o unirse, la pantalla vuelve atras con router.back(); falta ver en el telefono que "Mis grupos" se refresca (usa useFocusEffect).
+- El boton "Escanear codigo QR" esta desactivado a proposito hasta el paso de la camara.
+- Las instrucciones decian leer docs/ en Final, pero esos archivos estan en este repo; se uso la copia de aqui.
 
 - Nada de la capa de datos se ha corrido en un telefono ni contra la API real. Las pruebas usan el SQLite de Node, fetch de mentira y dependencias de mentira.
 - src/db/database.ts, src/api/api.ts, src/services/session.ts y src/services/sync.ts solo conectan piezas y no tienen pruebas.
