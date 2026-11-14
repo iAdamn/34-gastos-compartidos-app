@@ -181,6 +181,13 @@ describe("Pantalla del grupo", () => {
     expect(mockQr).toHaveBeenCalledWith(expect.objectContaining({ value: "ABC123" }));
   });
 
+  it("incluye el sorteo de quien paga la proxima", async () => {
+    mockLoad.mockResolvedValue(makeDetail());
+    await renderGroup();
+    expect(await screen.findByRole("button", { name: "Sortear" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Activar sacudir para sortear" })).toBeTruthy();
+  });
+
   it("el boton de nuevo gasto abre el formulario con el grupo", async () => {
     mockLoad.mockResolvedValue(makeDetail());
     await renderGroup();

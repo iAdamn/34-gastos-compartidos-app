@@ -11,6 +11,7 @@ import { GroupHeader } from "@/components/group-detail/GroupHeader";
 import { PaymentsSection } from "@/components/group-detail/PaymentsSection";
 import { useGroupActions } from "@/components/group-detail/useGroupActions";
 import { useGroupDetail } from "@/components/group-detail/useGroupDetail";
+import { Raffle } from "@/components/raffle/Raffle";
 
 export default function Grupo() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -49,6 +50,7 @@ export default function Grupo() {
           onConfirm={actions.confirmPayment}
           onCancel={actions.cancelPayment}
         />
+        <Raffle members={detail.members} />
         <TextField label="Buscar gasto" value={search} onChangeText={setSearch} />
         <ExpenseList
           expenses={detail.expenses}
