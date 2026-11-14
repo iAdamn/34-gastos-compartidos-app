@@ -9,12 +9,14 @@ import { TextField } from "@/components/base/TextField";
 import { BalanceList } from "@/components/group-detail/BalanceList";
 import { ExpenseList } from "@/components/group-detail/ExpenseList";
 import { SuggestedPayments } from "@/components/group-detail/SuggestedPayments";
+import { useGroupActions } from "@/components/group-detail/useGroupActions";
 import { useGroupDetail } from "@/components/group-detail/useGroupDetail";
 
 export default function Grupo() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { detail, status, offline, search, setSearch, reload } = useGroupDetail(id);
+  const actions = useGroupActions(reload);
 
   if (status === "loading") {
     return <StateView state="loading" />;
@@ -39,7 +41,14 @@ export default function Grupo() {
         <BalanceList members={detail.members} balances={detail.balances} />
         <SuggestedPayments members={detail.members} suggested={detail.suggested} />
         <TextField label="Buscar gasto" value={search} onChangeText={setSearch} />
-        <ExpenseList expenses={detail.expenses} members={detail.members} searching={!!search} />
+        {actions.error ? <AppText variant="error">{actions.error}</AppText> : null}
+        <ExpenseList
+          expenses={detail.expenses}
+          members={detail.members}
+          searching={!!search}
+          canDeleteExpense={actions.canDeleteExpense}
+          onDelete={actions.removeExpense}
+        />
       </ScrollView>
     </Screen>
   );

@@ -1,5 +1,6 @@
 import NetInfo, { NetInfoStateType, type NetInfoState } from "@react-native-community/netinfo";
 import { act, fireEvent, render, screen } from "@testing-library/react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import Grupo from "../app/grupo/[id]";
 import { useSession } from "@/providers/SessionProvider";
@@ -51,6 +52,11 @@ function lastNetListener(): (state: NetInfoState) => void {
   return call[0];
 }
 
+// Como en app/_layout.tsx, los gestos de la lista necesitan GestureHandlerRootView alrededor.
+function renderGroup() {
+  return render(<Grupo />, { wrapper: GestureHandlerRootView });
+}
+
 describe("Pantalla del grupo", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -67,13 +73,13 @@ describe("Pantalla del grupo", () => {
 
   it("muestra cargando mientras lee", async () => {
     mockLoad.mockReturnValue(new Promise(() => undefined));
-    await render(<Grupo />);
+    await renderGroup();
     expect(screen.getByText("Cargando...")).toBeTruthy();
   });
 
   it("muestra gastos, balance y pagos sugeridos", async () => {
     mockLoad.mockResolvedValue(makeDetail());
-    await render(<Grupo />);
+    await renderGroup();
     expect(await screen.findByText("Viaje a Cartagena")).toBeTruthy();
     expect(screen.getByText("Mercado")).toBeTruthy();
     expect(screen.getByText("$20.000,00 · pago Ana")).toBeTruthy();
@@ -84,7 +90,7 @@ describe("Pantalla del grupo", () => {
 
   it("marca los gastos pendientes de envio", async () => {
     mockLoad.mockResolvedValue(makeDetail({ expenses: [makeExpense({ pending: true })] }));
-    await render(<Grupo />);
+    await renderGroup();
     expect(await screen.findByText("Pendiente de envio")).toBeTruthy();
   });
 
@@ -92,14 +98,14 @@ describe("Pantalla del grupo", () => {
     mockLoad.mockResolvedValue(
       makeDetail({ expenses: [], balances: { u1: 0, u2: 0 }, suggested: [] }),
     );
-    await render(<Grupo />);
+    await renderGroup();
     expect(await screen.findByText("Todavia no hay gastos")).toBeTruthy();
     expect(screen.getByText("Nadie le debe a nadie")).toBeTruthy();
   });
 
   it("si la lectura falla muestra el error y deja reintentar", async () => {
     mockLoad.mockRejectedValue(new Error("fallo"));
-    await render(<Grupo />);
+    await renderGroup();
     expect(await screen.findByText("No se pudo cargar el grupo")).toBeTruthy();
     mockLoad.mockResolvedValue(makeDetail());
     await fireEvent.press(screen.getByRole("button", { name: "Reintentar" }));
@@ -108,13 +114,13 @@ describe("Pantalla del grupo", () => {
 
   it("si el grupo no esta en el telefono lo dice", async () => {
     mockLoad.mockResolvedValue(null);
-    await render(<Grupo />);
+    await renderGroup();
     expect(await screen.findByText("Grupo no encontrado")).toBeTruthy();
   });
 
   it("busca gastos por descripcion", async () => {
     mockLoad.mockResolvedValue(makeDetail());
-    await render(<Grupo />);
+    await renderGroup();
     await screen.findByText("Mercado");
     await fireEvent.changeText(screen.getByLabelText("Buscar gasto"), "taxi");
     expect(mockLoad).toHaveBeenLastCalledWith("g1", "taxi");
@@ -122,7 +128,7 @@ describe("Pantalla del grupo", () => {
 
   it("si la busqueda no encuentra nada lo dice", async () => {
     mockLoad.mockResolvedValue(makeDetail());
-    await render(<Grupo />);
+    await renderGroup();
     await screen.findByText("Mercado");
     mockLoad.mockResolvedValue(makeDetail({ expenses: [] }));
     await fireEvent.changeText(screen.getByLabelText("Buscar gasto"), "taxi");
@@ -131,7 +137,7 @@ describe("Pantalla del grupo", () => {
 
   it("sincroniza al abrir", async () => {
     mockLoad.mockResolvedValue(makeDetail());
-    await render(<Grupo />);
+    await renderGroup();
     await screen.findByText("Mercado");
     expect(mockSync).toHaveBeenCalledWith("g1");
     expect(screen.queryByText("Sin conexion, mostrando datos guardados")).toBeNull();
@@ -140,13 +146,13 @@ describe("Pantalla del grupo", () => {
   it("sin conexion avisa que muestra lo guardado", async () => {
     mockLoad.mockResolvedValue(makeDetail());
     mockSync.mockResolvedValue(false);
-    await render(<Grupo />);
+    await renderGroup();
     expect(await screen.findByText("Sin conexion, mostrando datos guardados")).toBeTruthy();
   });
 
   it("sincroniza otra vez cuando vuelve la conexion", async () => {
     mockLoad.mockResolvedValue(makeDetail());
-    await render(<Grupo />);
+    await renderGroup();
     await screen.findByText("Mercado");
     const callsAfterOpen = mockSync.mock.calls.length;
     await act(async () => lastNetListener()(netState(false)));
@@ -159,7 +165,7 @@ describe("Pantalla del grupo", () => {
     const unsubscribe = jest.fn();
     mockListen.mockReturnValue(unsubscribe);
     mockLoad.mockResolvedValue(makeDetail());
-    await render(<Grupo />);
+    await renderGroup();
     await screen.findByText("Mercado");
     await screen.unmount();
     expect(unsubscribe).toHaveBeenCalled();
@@ -167,7 +173,7 @@ describe("Pantalla del grupo", () => {
 
   it("el boton de nuevo gasto abre el formulario con el grupo", async () => {
     mockLoad.mockResolvedValue(makeDetail());
-    await render(<Grupo />);
+    await renderGroup();
     await screen.findByText("Mercado");
     await fireEvent.press(screen.getByRole("button", { name: "Registrar gasto" }));
     expect(mockPush).toHaveBeenCalledWith({ pathname: "/gasto/nuevo", params: { gid: "g1" } });
