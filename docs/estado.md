@@ -1,7 +1,7 @@
 # Estado de 34-gastos-compartidos-app
 
-- Fase: capa de datos y primeras pantallas listas: sesion, login y registro, mis grupos, crear grupo y unirse. Faltan la pantalla de un grupo y registrar gasto. Todavia no se ha corrido en un telefono.
-- Siguiente paso: pantalla de un grupo (gastos, balance, pagos sugeridos), registrar gasto, gestos y sensores (QR en unirse). Sigue pendiente A3 (Husky, CI y plantilla de PR).
+- Fase: todas las pantallas del enunciado listas, con los 2 gestos y los 2 sensores, mas vibracion al registrar un pago. 173 pruebas. Todavia no se ha corrido en un telefono.
+- Siguiente paso: probar en un telefono fisico (lista en "Por verificar en telefono"), revision del hito por un chat distinto (A12 y A17) y el build (A24 y A25). Sigue pendiente A3 (Husky, CI y plantilla de PR).
 - Fecha limite: sabado 2026-11-21.
 
 ## Que se hizo
@@ -21,6 +21,16 @@
 
 - Pantallas (chat ejecutor, Sonnet): SessionProvider (usuario, signIn, signUp, signOut, loadUser al abrir, onSessionExpired vuelve al login); componentes base en src/components/base (Screen, AppText, AppButton, TextField, StateView); rutas protegidas con Stack.Protected en app/_layout.tsx; app/(auth)/login y registro (comparten src/components/AuthForm); app/(tabs)/index "Mis grupos" (lee SQLite con listLocalGroups, sincroniza con syncEverything, aviso "Sin conexion, mostrando datos guardados"); app/grupo/nuevo (muestra el codigo); app/unirse (404 muestra "Grupo no encontrado", boton de QR desactivado como lugar reservado). Se borraron app/index.tsx y tests/home.test.tsx. Ninguna pantalla hace SQL ni fetch. 110 pruebas, npm run check en verde, expo-doctor 20 de 20.
 
+- Pantallas y sensores (chat ejecutor, Opus, 2026-11-14), un commit por punto:
+  1. app/grupo/[id].tsx: gastos con busqueda por descripcion, balance de cada miembro, pagos sugeridos, marca "Pendiente de envio", estados cargando, vacio, error y "Grupo no encontrado". Sincroniza al tomar el foco y cuando NetInfo pasa de sin red a con red (cameBackOnline). En Mis grupos cada grupo ahora abre su pantalla. Rutas grupo/[id] y gasto/nuevo registradas en app/_layout.tsx.
+  2. Gesto 1: deslizar un gasto a la izquierda 100 px lo elimina (usePanGesture de gesture handler v3 y useSharedValue de reanimated). Solo si canDelete; si no, el gesto esta desactivado y no hay boton. Alternativa: boton "Eliminar" con accessibilityLabel "Eliminar gasto <descripcion>".
+  3. Registrar pago desde un pago sugerido: pide confirmar (los pagos no se anulan), llama addPayment, vibra con expo-haptics (src/sensors/haptics.ts) y siempre muestra "Pago registrado", que es la alternativa si no hay vibracion.
+  4. app/gasto/nuevo.tsx: descripcion, monto en pesos, quien pago, participantes y modo. Porcentajes empiezan iguales (sobrante al uid menor) y cambian de a 5 con + y -, entre 1 y 100. Gesto 2: mantener presionado el nombre 400 ms marca o desmarca. Alternativa: casilla con accessibilityLabel "Participa <nombre>".
+  5. Sensor 1, camara: src/sensors/useQrScanner.ts revisa CameraView.isAvailableAsync y pide permiso solo al tocar "Escanear codigo QR", con un texto que explica para que. Sin camara o sin permiso lo dice y queda escribir el codigo. El QR leido llena el campo del codigo. El grupo muestra su QR (react-native-qrcode-svg) con solo el codigo. app.json declara el plugin de expo-camera sin microfono.
+  6. Sensor 2, acelerometro: src/sensors/shakeDetector.ts (funcion pura, mas de 2 g con 1 s de espera) y src/sensors/useShake.ts (isAvailableAsync, permiso al activar, subscription.remove al desactivar y al salir). Alternativa: boton "Sortear".
+- Jest: se agrego react-native-gesture-handler/jestSetup, el resolver de reanimated y tests/helpers/jestSetup.ts (quita getUIRuntimeHolder de worklets en las pruebas) para poder simular los gestos con fireGestureHandler.
+- npm run check en verde con 173 pruebas; expo-doctor 20 de 20.
+
 ## Notas
 
 - npm audit avisa 28 vulnerabilidades (1 baja y 27 moderadas) que vienen de dependencias de Expo y de las herramientas. No se forzo ningun arreglo.
@@ -32,11 +42,29 @@
 
 Ninguno.
 
+## Decisiones del ejecutor para que la persona confirme (no bloquean)
+
+- "Pago registrado" se muestra siempre, vibre o no el telefono: sirve a quien no siente la vibracion y cumple "si no hay haptics, mensaje en pantalla".
+- El pago se registra por el monto completo del pago sugerido. La spec permite cualquier monto, pero la tarea pedia registrarlo desde un pago sugerido; un pago parcial necesitaria un campo de monto.
+- Deslizar elimina sin pedir confirmacion, como dice la tabla de gestos. Si se quiere confirmar, es un cambio pequeno en useGroupActions.
+- Al leer un QR se llena el campo del codigo y el usuario toca "Unirme" (asi revisa su nombre visible antes de unirse).
+- El QR solo se muestra en la pantalla del grupo, como pidio la tarea. RF-01 dice "crear un grupo con codigo y QR" y el plan A11 nombraba app/grupo/nuevo.tsx: si el docente lo quiere al crear, se agrega GroupQr en esa pantalla (una linea).
+
+## Por verificar en telefono (no se puede en Jest)
+
+- Que deslizar se sienta bien: la distancia de 100 px y que no choque con el desplazamiento vertical de la lista (activeOffsetX de 15 px).
+- Que mantener presionado 400 ms marque al participante y que el toque corto sobre el nombre no haga nada.
+- Camara: que la vista previa abra, que lea el QR que muestra otro telefono y que el dialogo de permiso salga con el texto de app.json. Que al negar el permiso la app siga.
+- Vibracion: que se sienta al confirmar un pago. expo-haptics no tiene isAvailableAsync; si falla se devuelve false y el mensaje en pantalla sigue.
+- Acelerometro: que 2 g sea un buen umbral (ni se dispara al caminar ni exige sacudir muy fuerte). En Android requestPermissionsAsync responde concedido sin dialogo.
+- Que al volver la red se sincronice solo (NetInfo real) y que lo pendiente se envie.
+- Que el QR del grupo se lea bien en pantalla a 160 px.
+- Que gesture handler 3 y reanimated 4 funcionen en el build (en Jest se usa la version web de reanimated).
+
 ## Por verificar
 
 - Las pantallas solo se probaron con React Native Testing Library y expo-router de mentira. No se han visto en un telefono: falta comprobar que Stack.Protected redirige bien al iniciar y cerrar sesion.
 - Al crear o unirse, la pantalla vuelve atras con router.back(); falta ver en el telefono que "Mis grupos" se refresca (usa useFocusEffect).
-- El boton "Escanear codigo QR" esta desactivado a proposito hasta el paso de la camara.
 - Las instrucciones decian leer docs/ en Final, pero esos archivos estan en este repo; se uso la copia de aqui.
 
 - Nada de la capa de datos se ha corrido en un telefono ni contra la API real. Las pruebas usan el SQLite de Node, fetch de mentira y dependencias de mentira.
