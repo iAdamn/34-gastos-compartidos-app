@@ -1,5 +1,5 @@
-import { act, render, screen } from "@testing-library/react-native";
-import { Text } from "react-native";
+import { act, fireEvent, render, screen } from "@testing-library/react-native";
+import { Pressable, Text } from "react-native";
 
 import { onSessionExpired } from "@/api/api";
 import { SessionProvider, useSession } from "@/providers/SessionProvider";
@@ -21,14 +21,23 @@ const mockOnExpired = jest.mocked(onSessionExpired);
 
 const ana = { id: "u1", email: "ana@correo.com" };
 
-// Componente de prueba que muestra lo que da el contexto y expone las acciones.
-let actions: ReturnType<typeof useSession>;
+// Componente de prueba: muestra el usuario y tiene botones que llaman las acciones.
 function Probe() {
-  actions = useSession();
-  if (actions.loading) {
+  const { user, loading, signIn, signOut } = useSession();
+  if (loading) {
     return <Text>cargando</Text>;
   }
-  return <Text>{actions.user ? actions.user.email : "sin sesion"}</Text>;
+  return (
+    <>
+      <Text>{user ? user.email : "sin sesion"}</Text>
+      <Pressable onPress={() => signIn("ana@correo.com", "12345678")}>
+        <Text>entrar</Text>
+      </Pressable>
+      <Pressable onPress={() => signOut()}>
+        <Text>salir</Text>
+      </Pressable>
+    </>
+  );
 }
 
 async function renderProvider() {
@@ -59,9 +68,7 @@ describe("SessionProvider", () => {
     mockSignIn.mockResolvedValue(ana);
     await renderProvider();
     await screen.findByText("sin sesion");
-    await act(async () => {
-      await actions.signIn("ana@correo.com", "12345678");
-    });
+    await fireEvent.press(screen.getByText("entrar"));
     expect(await screen.findByText("ana@correo.com")).toBeTruthy();
   });
 
@@ -70,9 +77,7 @@ describe("SessionProvider", () => {
     mockSignOut.mockResolvedValue();
     await renderProvider();
     await screen.findByText("ana@correo.com");
-    await act(async () => {
-      await actions.signOut();
-    });
+    await fireEvent.press(screen.getByText("salir"));
     expect(await screen.findByText("sin sesion")).toBeTruthy();
   });
 
