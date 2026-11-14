@@ -1,0 +1,122 @@
+{
+  "nota": "Tabla de casos compartida por la app y la API. Montos en centavos (pesos x 100). Unidad de reparto: 1 peso = 100 centavos. Los uid van en orden ascendente a, b, c, d.",
+  "reparto_igual": [
+    {
+      "nombre": "100.000 entre 3 (criterio 1 del enunciado)",
+      "monto_centavos": 10000000,
+      "participantes": ["c", "a", "b"],
+      "esperado": { "a": 3333400, "b": 3333300, "c": 3333300 }
+    },
+    {
+      "nombre": "division exacta",
+      "monto_centavos": 9000000,
+      "participantes": ["a", "b", "c"],
+      "esperado": { "a": 3000000, "b": 3000000, "c": 3000000 }
+    },
+    {
+      "nombre": "1 peso entre 3",
+      "monto_centavos": 100,
+      "participantes": ["a", "b", "c"],
+      "esperado": { "a": 100, "b": 0, "c": 0 }
+    },
+    {
+      "nombre": "un solo participante",
+      "monto_centavos": 5000000,
+      "participantes": ["b"],
+      "esperado": { "b": 5000000 }
+    },
+    {
+      "nombre": "sobran 2 pesos",
+      "monto_centavos": 500,
+      "participantes": ["a", "b", "c"],
+      "esperado": { "a": 200, "b": 200, "c": 100 }
+    }
+  ],
+  "reparto_porcentajes": [
+    {
+      "nombre": "50 30 20 exacto",
+      "monto_centavos": 10000000,
+      "porcentajes": { "a": 50, "b": 30, "c": 20 },
+      "esperado": { "a": 5000000, "b": 3000000, "c": 2000000 }
+    },
+    {
+      "nombre": "1.001 pesos con 33 33 34, sobra 1 peso",
+      "monto_centavos": 100100,
+      "porcentajes": { "a": 33, "b": 33, "c": 34 },
+      "esperado": { "a": 33100, "b": 33000, "c": 34000 }
+    },
+    {
+      "nombre": "100 por ciento a uno",
+      "monto_centavos": 700000,
+      "porcentajes": { "a": 100 },
+      "esperado": { "a": 700000 }
+    }
+  ],
+  "reparto_invalido": [
+    { "nombre": "monto cero", "monto_centavos": 0, "participantes": ["a"] },
+    { "nombre": "monto negativo", "monto_centavos": -100, "participantes": ["a"] },
+    { "nombre": "monto con centavos sueltos", "monto_centavos": 150, "participantes": ["a"] },
+    { "nombre": "sin participantes", "monto_centavos": 100, "participantes": [] },
+    {
+      "nombre": "porcentajes suman 99",
+      "monto_centavos": 100000,
+      "porcentajes": { "a": 50, "b": 49 }
+    },
+    { "nombre": "porcentaje cero", "monto_centavos": 100000, "porcentajes": { "a": 100, "b": 0 } }
+  ],
+  "balance": [
+    {
+      "nombre": "4 personas, 2 gastos y 1 pago",
+      "miembros": ["a", "b", "c", "d"],
+      "gastos": [
+        {
+          "pagador_uid": "a",
+          "monto_centavos": 12000000,
+          "participantes": ["a", "b", "c", "d"],
+          "porcentajes": null
+        },
+        {
+          "pagador_uid": "b",
+          "monto_centavos": 6000000,
+          "participantes": ["b", "c"],
+          "porcentajes": null
+        }
+      ],
+      "pagos": [{ "de_uid": "c", "a_uid": "a", "monto_centavos": 2000000 }],
+      "esperado": { "a": 7000000, "b": 0, "c": -4000000, "d": -3000000 }
+    },
+    {
+      "nombre": "sin gastos",
+      "miembros": ["a", "b"],
+      "gastos": [],
+      "pagos": [],
+      "esperado": { "a": 0, "b": 0 }
+    }
+  ],
+  "pagos_sugeridos": [
+    { "nombre": "todos en cero", "saldos": { "a": 0, "b": 0 }, "esperado": [] },
+    {
+      "nombre": "dos personas",
+      "saldos": { "a": 500000, "b": -500000 },
+      "esperado": [{ "de_uid": "b", "a_uid": "a", "monto_centavos": 500000 }]
+    },
+    {
+      "nombre": "sigue del caso de balance con 4 personas",
+      "saldos": { "a": 7000000, "b": 0, "c": -4000000, "d": -3000000 },
+      "esperado": [
+        { "de_uid": "c", "a_uid": "a", "monto_centavos": 4000000 },
+        { "de_uid": "d", "a_uid": "a", "monto_centavos": 3000000 }
+      ]
+    },
+    {
+      "nombre": "dos acreedores y dos deudores",
+      "saldos": { "a": 300000, "b": 100000, "c": -200000, "d": -200000 },
+      "esperado": [
+        { "de_uid": "c", "a_uid": "a", "monto_centavos": 200000 },
+        { "de_uid": "d", "a_uid": "a", "monto_centavos": 100000 },
+        { "de_uid": "d", "a_uid": "b", "monto_centavos": 100000 }
+      ]
+    }
+  ],
+  "propiedad_pagos_sugeridos": "Para cualquier caso: aplicar los pagos deja todos los saldos en 0 y hay maximo n - 1 pagos."
+}

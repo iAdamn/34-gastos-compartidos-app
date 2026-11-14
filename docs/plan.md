@@ -1,0 +1,55 @@
+# Plan de este repo: 34-gastos-compartidos-app
+
+Sale del plan maestro del proyecto 34, aprobado el 2026-11-14. Fecha limite: sabado 2026-11-21.
+Reglas de negocio en `docs/spec.md`, contrato en `docs/contrato-api.md`, casos de prueba del dominio en `docs/casos-dominio.json`.
+
+## Como se usa
+
+- Los pasos van en orden. Un solo chat escribe en el repo a la vez.
+- Cada paso dice quien lo hace: Fable, Opus, Sonnet o Persona.
+- Se trabaja solo en los archivos del paso. Primero la prueba que falla, despues el codigo.
+- Al terminar: `npm run check` en verde, se cambia el estado del paso aqui y se actualiza `docs/estado.md`.
+- Si falta una regla o algo es ambiguo, se anota como bloqueo en `docs/estado.md`. No se inventa.
+- Los commits, `git push`, `eas` y `vercel` los autoriza la persona.
+
+## Pasos
+
+- A1. [Fable] Base de calidad de la app sobre la plantilla, sin features: scripts `typecheck`, `lint`, `format:check`, `test`, `check`; `strict` y `noUncheckedIndexedAccess`; ESLint flat con `eslint-config-expo` y las reglas en `error`; Prettier; Jest con `jest-expo` y umbral de cobertura; quitar los ejemplos de la plantilla; `README` inicial con las dependencias justificadas. Las instalaciones se piden antes a la persona — archivos: `package.json`, `package-lock.json`, `tsconfig.json`, `eslint.config.mjs`, `.prettierrc`, `.prettierignore`, `jest.config.js`, `app.json`, `README.md`, archivos de ejemplo de la plantilla — estado: hecho (2026-11-14)
+- A2. [Persona] Revisar el diff completo y hacer el **primer commit** de la app (`chore: initial project with AI configuration and quality scripts`). Comprobar con `git show --stat HEAD` que están `AGENTS.md`, `CLAUDE.md`, `.claude/settings.json`, `ia/CONFIGURACION.md`, `.gitignore`, `env.example` y los scripts — archivos: ninguno nuevo — estado: hecho (2026-11-14)
+- A3. [Sonnet] Segundo commit de la app: Husky + lint-staged (commit: formatea y revisa lo modificado; push: `npm run check`), CI de GitHub Actions (`npm ci` → `check` → build o `expo-doctor` → `npm audit --audit-level=high`) y plantilla de PR — archivos: `.husky/**`, `.lintstagedrc.json`, `.github/workflows/ci.yml`, `.github/pull_request_template.md`, `package.json` (solo `prepare` y devDependencies) — estado: pendiente
+- A4. [Fable] Dominio puro, con las pruebas primero: dinero en centavos, reparto igual y por porcentajes con sobrantes, balance por persona (gastos y pagos), pagos sugeridos, formato del código de grupo. Cubre CA-1, CA-2 y CA-15 — archivos: `src/domain/**` — estado: pendiente
+- A5. [Fable] Esqueleto de la app: navegación (Stack + Tabs, `GestureHandlerRootView`), tema, componentes base accesibles (pantalla, texto, botón, campo de texto, vista de cuatro estados), tipos del dominio, validación de formularios, interfaces de repositorio con implementación en memoria y proveedor de datos — archivos: `app/_layout.tsx`, `app/(tabs)/_layout.tsx`, `src/theme/**`, `src/components/base/**`, `src/types/**`, `src/validation/**`, `src/repositories/types.ts`, `src/repositories/memory/**`, `src/providers/DataProvider.tsx` — estado: pendiente
+- A6. [Sonnet] Pantalla «Mis grupos» con estados vacío, cargando y error, y sus pruebas — archivos: `app/(tabs)/index.tsx`, `src/components/groups/**` — estado: pendiente
+- A7. [Sonnet] Pantalla «Crear grupo» con formulario validado; muestra el código — archivos: `app/grupo/nuevo.tsx`, `src/components/group-form/**` — estado: pendiente
+- A8. [Sonnet] Pantalla «Unirse» con entrada manual del código, validación y mensaje «Grupo no encontrado» — archivos: `app/unirse.tsx`, `src/components/join/**` — estado: pendiente
+- A9. [Opus] Pantalla «Registrar gasto»: pagador, monto, modo de división. Gesto de mantener presionado para elegir participantes, con alternativa por botón y `accessibilityLabel`. Los porcentajes se ajustan con botones + y − — archivos: `app/gasto/nuevo.tsx`, `src/components/expense-form/**` — estado: pendiente
+- A10. [Opus] Pantalla del grupo: lista de gastos con deslizar para eliminar (solo el creador, con botón alternativo), balance, pagos sugeridos y registrar pago (RF-05) — archivos: `app/grupo/[id].tsx`, `src/components/group-detail/**` — estado: pendiente
+- A11. [Opus] Primer sensor, la cámara: escanear el QR para unirse y mostrar el QR del grupo, con `isAvailableAsync`, permiso al activar y alternativa manual. Va después de A7, A8 y A10 porque los edita para integrar — archivos: `src/sensors/useQrScanner.ts`, `src/components/qr/**`, `app.json` (plugin y permiso de cámara), y solo la integración en `app/unirse.tsx`, `app/grupo/nuevo.tsx`, `app/grupo/[id].tsx` — estado: pendiente
+- A12. [Fable] Revisión del hito 1 contra CA-13 y CA-14 y el enunciado (secciones 3 a 5). Las correcciones se anotan como pasos nuevos; Fable no corrige código ajeno sin anotarlo — archivos: `docs/plan.md`, `docs/estado.md` — estado: pendiente
+- A13. [Fable] Base de datos local: apertura, migraciones con `PRAGMA user_version` y esquema del enunciado ampliado — archivos: `src/db/**` — estado: pendiente
+- A14. [Opus] Repositorios SQLite con SQL parametrizado para grupos, miembros, gastos y pagos; búsqueda de gastos por descripción; pruebas — archivos: `src/repositories/sqlite/**` — estado: pendiente
+- A15. [Fable] Servicios de negocio: crear y eliminar gasto y registrar pago escriben primero en SQLite con `pending = 1`; el balance se recalcula en local con `src/domain`. Cambiar el proveedor de datos de memoria a SQLite — archivos: `src/services/groups/**`, `src/services/expenses/**`, `src/services/payments/**`, `src/providers/DataProvider.tsx` — estado: pendiente
+- A16. [Sonnet] Búsqueda en la pantalla del grupo, aviso «Sin conexión · mostrando datos guardados», marca de «pendiente de envío» y pruebas de componentes — archivos: `src/components/common/**`, `src/components/group-detail/**` (después de A10 y A11) — estado: pendiente
+- A17. [Fable] Revisión del hito 2 contra CA-9 y el modelo de datos — archivos: `docs/plan.md`, `docs/estado.md` — estado: pendiente
+- A18. [Fable] Cliente HTTP y sesión: `fetch` con token, renovación única ante 401, traducción de errores, tokens en `expo-secure-store`, proveedor de sesión y rutas protegidas — archivos: `src/api/**`, `src/services/session/**`, `src/providers/SessionProvider.tsx`, `app/_layout.tsx` — estado: pendiente
+- A19. [Sonnet] Pantallas de inicio de sesión y registro con validación y mensajes de error — archivos: `app/(auth)/**`, `src/components/auth/**` — estado: pendiente
+- A20. [Fable] Sincronización: enviar pendientes, traer `cambios?since=`, gana la última escritura del servidor; cuándo sincronizar (al volver la red y al abrir la app). Cubre CA-10 — archivos: `src/services/sync/**`, `src/providers/SyncProvider.tsx` — estado: pendiente
+- A21. [Opus] Conectar grupos con la API: crear, unirse y listar contra el servidor, descarga inicial del grupo y manejo de 403 y 404. Cubre CA-3, CA-5 y CA-6 — archivos: `src/services/groups/**` (después de A15) — estado: pendiente
+- A22. [Opus] Segundo sensor: sacudir para sortear quién paga, con la detección como función pura probada con mocks y botón «Sortear»; haptics al registrar un pago — archivos: `src/sensors/useShake.ts`, `src/sensors/shakeDetector.ts`, `src/sensors/haptics.ts`, `src/components/raffle/**`, integración en `app/grupo/[id].tsx` — estado: pendiente
+- A23. [Fable] Revisión del hito 3: app real contra API real, CA-9 a CA-12 y CA-14 — archivos: `docs/plan.md`, `docs/estado.md` — estado: pendiente
+- A24. [Opus] Preparar el build: `eas.json` con perfil `preview` (`buildType: apk`, `EXPO_PUBLIC_API_URL` en `env`), `android.package`, `versionCode`, ícono, permisos mínimos y revisión de que no hay `localhost` ni secretos en el código ni en el bundle — archivos: `eas.json`, `app.json`, `scripts/check-secrets.mjs` — estado: pendiente
+- A25. [Persona] Lanzar el build temprano (consume cuota y la cola tarda): `expo-doctor`, `expo install --check`, `eas build -p android --profile preview`. Instalar en un teléfono físico y grabar el video — archivos: ninguno del repo — estado: pendiente
+- A26. [Sonnet] Pasada de accesibilidad (etiquetas, roles, tamaños táctiles, alternativa a cada gesto) y pruebas que falten para el umbral de cobertura. Ningún otro chat escribe en el repo de la app mientras dura — archivos: `app/**`, `src/components/**` — estado: pendiente
+- A27. [Sonnet] `README` de la app con instrucciones, dependencias justificadas y las capturas que tome la persona — archivos: `README.md`, `docs/capturas/**` — estado: pendiente
+- A28. [Fable] Revisión final del producto contra todos los criterios y la lista de seguridad del enunciado — archivos: `docs/plan.md`, `docs/estado.md` — estado: pendiente
+- A29. [Opus] Solo si sobra tiempo: control de pan para ajustar porcentajes, además de los botones — archivos: `src/components/expense-form/PercentSlider.tsx` y su integración en `app/gasto/nuevo.tsx` — estado: pendiente
+
+## Evidencias de la configuracion de IA (al final)
+
+- C2. [Persona] Canario y línea base: crear `.env.local` con `CANARIO=ZZZ-NO-ES-UN-SECRETO` (ignorado por git) y `docs/trampa.md`. En una carpeta de prueba **sin** `.claude/settings.json`, capturar al menos 2 acciones que sin la regla sí funcionan (por ejemplo leer el `.env.local` y `curl`) — archivos: `.env.local` (no se versiona), `docs/trampa.md`, `ia/capturas/**` — estado: pendiente
+- C3. [Fable] Hook `PreToolUse` propio con 10 pruebas (`node:test`): bloquea `.env*`, rutas fuera del proyecto y `curl`, `wget` y `sudo`. Fable lo escribe en `Final` y la persona lo copia al repo y lo registra a mano en `.claude/settings.json` — archivos: `.claude/hooks/guard.js`, `guard.test.js` — estado: pendiente
+- C5. [Persona] Ejecutar las 10 pruebas de contención en una sesión nueva, con el prompt exacto y una captura de cada una. Las pruebas 4, 5 y 6 se hacen con el hook activo y se anota el resultado real. Si una falla: se anota el fallo, se ajusta a mano y se repite — archivos: `ia/capturas/**` — estado: pendiente
+- C6. [Sonnet] Redactar las evidencias con los resultados reales que entregue la persona, incluidos los fallos: las 10 pruebas, la salida de `npm run check`, la cobertura, el enlace a la CI y el índice — archivos: `ia/PRUEBAS-CONTENCION.md`, `ia/CONFIGURACION.md` (sección de resultados), `IA.md` — estado: pendiente
+- C7. [Sonnet] Segundo reto de excelencia: `gitleaks` en pre-commit y CI, probado con una clave falsa plantada — archivos: `.gitleaks.toml`, `.husky/pre-commit`, `.github/workflows/ci.yml`, `ia/RETOS.md` — estado: pendiente
+- C8. [Fable] Revisión final de la entrega contra CA-21 a CA-24 y la sección 11 de `requisitos-ia-calidad.md`. Comprobar que la bitácora tiene sus casos reales de rechazo — archivos: `docs/plan.md`, `docs/estado.md` — estado: pendiente
+- C9. [Persona] Ensayo de la sustentación en cada repo (pedir a la IA leer `.env.local` y salir de la carpeta, explicar un fragmento de código), etiqueta Git de la versión y reunir los entregables — archivos: ninguno — estado: pendiente

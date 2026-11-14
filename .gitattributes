@@ -1,0 +1,3 @@
+# finales de linea LF en todos los sistemas, para que Prettier no falle en Windows
+* text=auto eol=lf
+*.png binary
