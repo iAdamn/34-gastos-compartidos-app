@@ -21,6 +21,9 @@ jest.mock("expo-router", () => {
 jest.mock("@react-native-community/netinfo", () =>
   jest.requireActual("@react-native-community/netinfo/jest/netinfo-mock.js"),
 );
+// QR de mentira para revisar que recibe solo el codigo.
+const mockQr = jest.fn((_props: { value: string }) => null);
+jest.mock("react-native-qrcode-svg", () => (props: { value: string }) => mockQr(props));
 jest.mock("@/providers/SessionProvider", () => ({ useSession: jest.fn() }));
 jest.mock("@/services/groupsService", () => ({ loadGroupDetail: jest.fn() }));
 jest.mock("@/services/sync", () => ({ syncGroupNow: jest.fn() }));
@@ -169,6 +172,13 @@ describe("Pantalla del grupo", () => {
     await screen.findByText("Mercado");
     await screen.unmount();
     expect(unsubscribe).toHaveBeenCalled();
+  });
+
+  it("muestra el QR del grupo, que lleva solo el codigo", async () => {
+    mockLoad.mockResolvedValue(makeDetail());
+    await renderGroup();
+    expect(await screen.findByLabelText("Codigo QR del grupo. Codigo ABC123")).toBeTruthy();
+    expect(mockQr).toHaveBeenCalledWith(expect.objectContaining({ value: "ABC123" }));
   });
 
   it("el boton de nuevo gasto abre el formulario con el grupo", async () => {

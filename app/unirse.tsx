@@ -6,6 +6,7 @@ import { AppButton } from "@/components/base/AppButton";
 import { AppText } from "@/components/base/AppText";
 import { Screen } from "@/components/base/Screen";
 import { TextField } from "@/components/base/TextField";
+import { QrScanner } from "@/components/qr/QrScanner";
 import { useSession } from "@/providers/SessionProvider";
 import { joinGroup, validateJoinForm } from "@/services/groupsService";
 
@@ -45,13 +46,7 @@ export default function Unirse() {
 
   return (
     <Screen>
-      {/* Lugar del boton de escanear QR. La camara se conecta en un paso posterior. */}
-      <AppButton
-        label="Escanear codigo QR"
-        variant="secondary"
-        disabled
-        onPress={() => undefined}
-      />
+      <QrScanner onCode={setCodigo} />
       <TextField
         label="Codigo del grupo"
         value={codigo}
