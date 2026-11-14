@@ -20,6 +20,11 @@ function Routes() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="grupo/nuevo" options={{ headerShown: true, title: "Nuevo grupo" }} />
         <Stack.Screen name="unirse" options={{ headerShown: true, title: "Unirse a un grupo" }} />
+        <Stack.Screen name="grupo/[id]" options={{ headerShown: true, title: "Grupo" }} />
+        <Stack.Screen
+          name="gasto/nuevo"
+          options={{ headerShown: true, title: "Registrar gasto" }}
+        />
       </Stack.Protected>
     </Stack>
   );

@@ -54,6 +54,8 @@ describe("layout raiz", () => {
     await render(<RootLayout />);
     expect(screen.getByText("(tabs)")).toBeTruthy();
     expect(screen.getByText("grupo/nuevo")).toBeTruthy();
+    expect(screen.getByText("grupo/[id]")).toBeTruthy();
+    expect(screen.getByText("gasto/nuevo")).toBeTruthy();
     expect(screen.queryByText("(auth)")).toBeNull();
   });
 

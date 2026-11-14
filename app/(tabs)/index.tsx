@@ -1,6 +1,6 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
 import { AppButton } from "@/components/base/AppButton";
 import { AppText } from "@/components/base/AppText";
@@ -65,6 +65,7 @@ export default function MisGrupos() {
 }
 
 function GroupList({ groups }: { groups: LocalGroup[] }) {
+  const router = useRouter();
   if (groups.length === 0) {
     return <StateView state="empty" message="Todavia no tienes grupos" />;
   }
@@ -73,10 +74,15 @@ function GroupList({ groups }: { groups: LocalGroup[] }) {
       data={groups}
       keyExtractor={(group) => group.id}
       renderItem={({ item }) => (
-        <View style={styles.card}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Abrir ${item.nombre}`}
+          onPress={() => router.push({ pathname: "/grupo/[id]", params: { id: item.id } })}
+          style={styles.card}
+        >
           <AppText>{item.nombre}</AppText>
           <AppText variant="muted">{`Codigo: ${item.codigo}`}</AppText>
-        </View>
+        </Pressable>
       )}
     />
   );
@@ -85,6 +91,7 @@ function GroupList({ groups }: { groups: LocalGroup[] }) {
 const styles = StyleSheet.create({
   actions: { gap: 8 },
   card: {
+    minHeight: 48,
     paddingVertical: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: "#6b7280",

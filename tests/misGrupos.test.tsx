@@ -88,6 +88,14 @@ describe("Mis grupos", () => {
     expect(mockPush).toHaveBeenCalledWith("/unirse");
   });
 
+  it("tocar un grupo abre su pantalla", async () => {
+    mockList.mockResolvedValue([cena]);
+    mockSync.mockResolvedValue(true);
+    await render(<MisGrupos />);
+    await fireEvent.press(await screen.findByRole("button", { name: "Abrir Viaje a Cartagena" }));
+    expect(mockPush).toHaveBeenCalledWith({ pathname: "/grupo/[id]", params: { id: "g1" } });
+  });
+
   it("cerrar sesion llama a signOut", async () => {
     mockList.mockResolvedValue([]);
     mockSync.mockResolvedValue(true);
