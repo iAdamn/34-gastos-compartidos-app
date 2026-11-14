@@ -53,14 +53,23 @@ Las que venian con la plantilla de Expo y se dejaron:
 
 Las que se agregaron:
 
-| Paquete                         | Para que                                             |
-| ------------------------------- | ---------------------------------------------------- |
-| `jest`, `jest-expo`             | Correr las pruebas, lo pide el enunciado             |
-| `@testing-library/react-native` | Probar pantallas y componentes, lo pide el enunciado |
-| `test-renderer`                 | La exige `@testing-library/react-native` version 14  |
-| `@types/jest`                   | Tipos de Jest para TypeScript                        |
-| `eslint`, `eslint-config-expo`  | Reglas de calidad                                    |
-| `prettier`                      | Formato igual en todo el codigo                      |
+| Paquete                                       | Para que                                                                                                  |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `jest`, `jest-expo`                           | Correr las pruebas, lo pide el enunciado                                                                  |
+| `@testing-library/react-native`               | Probar pantallas y componentes, lo pide el enunciado                                                      |
+| `test-renderer`                               | La exige `@testing-library/react-native` version 14                                                       |
+| `@types/jest`                                 | Tipos de Jest para TypeScript                                                                             |
+| `eslint`, `eslint-config-expo`                | Reglas de calidad                                                                                         |
+| `prettier`                                    | Formato igual en todo el codigo                                                                           |
+| `@types/node`                                 | Tipos de Node, para usar su SQLite en las pruebas de los repositorios                                     |
+| `expo-sqlite`                                 | Base de datos local, la app funciona sin conexion                                                         |
+| `expo-secure-store`                           | Guardar los tokens de sesion de forma segura                                                              |
+| `expo-crypto`                                 | Generar los id (UUID) de gastos y pagos                                                                   |
+| `@react-native-community/netinfo`             | Saber si hay conexion para sincronizar. No esta en la lista del enunciado, es el que usa la guia de clase |
+| `expo-camera`                                 | Escanear el QR de un grupo                                                                                |
+| `react-native-qrcode-svg`, `react-native-svg` | Mostrar el QR del grupo                                                                                   |
+| `expo-sensors`                                | Acelerometro, sacudir para sortear                                                                        |
+| `expo-haptics`                                | Vibracion al registrar un pago                                                                            |
 
 Se quitaron de la plantilla porque no se usan: `@expo/ui`, `expo-glass-effect`, `expo-image`, `expo-symbols`,
 `expo-web-browser`, `expo-device`, `react-dom` y `react-native-web`. La app es solo movil.
