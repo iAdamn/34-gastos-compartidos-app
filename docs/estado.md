@@ -42,7 +42,7 @@
 
 Ninguno.
 
-## Decisiones del ejecutor para que la persona confirme (no bloquean)
+## Decisiones del ejecutor (confirmadas por la persona el 2026-11-14)
 
 - "Pago registrado" se muestra siempre, vibre o no el telefono: sirve a quien no siente la vibracion y cumple "si no hay haptics, mensaje en pantalla".
 - El pago se registra por el monto completo del pago sugerido. La spec permite cualquier monto, pero la tarea pedia registrarlo desde un pago sugerido; un pago parcial necesitaria un campo de monto.
