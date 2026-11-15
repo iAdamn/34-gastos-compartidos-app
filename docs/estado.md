@@ -1,10 +1,13 @@
 # Estado de 34-gastos-compartidos-app
 
 - Fase: todas las pantallas del enunciado listas, con los 2 gestos y los 2 sensores, mas vibracion al registrar un pago. 173 pruebas. Todavia no se ha corrido en un telefono.
-- Siguiente paso: probar en un telefono fisico (lista en "Por verificar en telefono"), revision del hito por un chat distinto (A12 y A17) y el build (A24 y A25). Sigue pendiente A3 (Husky, CI y plantilla de PR).
+- API real: https://34-gastos-compartidos-api.vercel.app (en eas.json). Primera APK en EAS (perfil preview, cuenta adnsupreme). Para Expo Go: npx expo start --go con EXPO_PUBLIC_API_URL apuntando a esa URL.
+- Siguiente paso: instalar la APK y probar en un telefono fisico (lista en "Por verificar en telefono"), revision del hito por un chat distinto (A12 y A17). Sigue pendiente A3 (Husky, CI y plantilla de PR).
 - Fecha limite: sabado 2026-11-21.
 
 ## Que se hizo
+
+- A24 (2026-11-14, Opus): eas.json con perfil preview (APK, EXPO_PUBLIC_API_URL de la API real), android.package co.tdea.gastoscompartidos, versionCode 1, permisos bloqueados (SYSTEM_ALERT_WINDOW y almacenamiento) y scripts/check-secrets.mjs (busca firebaseConfig, claves, localhost y http sin s; se probo con una clave falsa plantada). eas init vinculo el proyecto @adnsupreme/34-gastos-compartidos-app. A25: primer eas build lanzado por la IA con permiso de la persona.
 
 - Paso A1: base de calidad. Scripts typecheck, lint, format:check, test y check. TypeScript con strict y noUncheckedIndexedAccess. ESLint con las reglas en error. Prettier. Jest con jest-expo y React Native Testing Library. El umbral de cobertura del 80 % se activa cuando exista src/domain.
 - Las rutas quedaron en app/ como pide el enunciado. Se quitaron las pantallas, componentes, imagenes y paquetes de ejemplo de la plantilla. Queda una pantalla inicial provisional con su prueba.
