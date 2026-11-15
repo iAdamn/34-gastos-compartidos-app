@@ -95,6 +95,21 @@ describe("componente Sortear", () => {
     expect(mockPermission).not.toHaveBeenCalled();
   });
 
+  it("cada sorteo se nota aunque salga la misma persona", async () => {
+    await render(<Raffle members={[{ uid: "u1", nombre: "Ana" }]} />);
+    await fireEvent.press(screen.getByRole("button", { name: "Sortear" }));
+    expect(screen.getByText("Sorteo 1")).toBeTruthy();
+    await fireEvent.press(screen.getByRole("button", { name: "Sortear" }));
+    expect(screen.getByText("Sorteo 2")).toBeTruthy();
+    expect(screen.getByText("Paga la proxima: Ana")).toBeTruthy();
+  });
+
+  it("sin miembros avisa en vez de quedarse callado", async () => {
+    await render(<Raffle members={[]} />);
+    await fireEvent.press(screen.getByRole("button", { name: "Sortear" }));
+    expect(screen.getByText("No hay miembros para sortear")).toBeTruthy();
+  });
+
   it("explica para que se usa el acelerometro", async () => {
     await render(<Raffle members={members} />);
     expect(

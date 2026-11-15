@@ -195,4 +195,19 @@ describe("Pantalla del grupo", () => {
     await fireEvent.press(screen.getByRole("button", { name: "Registrar gasto" }));
     expect(mockPush).toHaveBeenCalledWith({ pathname: "/gasto/nuevo", params: { gid: "g1" } });
   });
+
+  it("con un solo miembro, Sortear muestra a ese miembro", async () => {
+    mockLoad.mockResolvedValue(
+      makeDetail({
+        members: [{ uid: "u1", nombre: "Ana" }],
+        expenses: [],
+        balances: { u1: 0 },
+        suggested: [],
+      }),
+    );
+    await renderGroup();
+    await screen.findByText("Viaje a Cartagena");
+    await fireEvent.press(screen.getByRole("button", { name: "Sortear" }));
+    expect(screen.getByText("Paga la proxima: Ana")).toBeTruthy();
+  });
 });

@@ -20,8 +20,11 @@ type Props = { members: Member[]; random?: () => number };
 // Sortear quien paga la proxima: con el boton o sacudiendo el telefono.
 export function Raffle({ members, random = Math.random }: Props) {
   const [winner, setWinner] = useState<string | null>(null);
+  // Cuenta los sorteos para que cada uno se note, aunque salga la misma persona.
+  const [round, setRound] = useState(0);
   const draw = useCallback(() => {
     setWinner(pickRandomMember(members, random)?.nombre ?? null);
+    setRound((current) => current + 1);
   }, [members, random]);
   const shake = useShake(draw);
   const message = STATUS_TEXT[shake.status];
@@ -44,9 +47,12 @@ export function Raffle({ members, random = Math.random }: Props) {
         />
       )}
       {message ? <AppText variant="muted">{message}</AppText> : null}
-      {winner ? (
+      {round > 0 ? (
         <View accessibilityLiveRegion="polite">
-          <AppText>{`Paga la proxima: ${winner}`}</AppText>
+          <AppText variant="muted">{`Sorteo ${round}`}</AppText>
+          <AppText>
+            {winner ? `Paga la proxima: ${winner}` : "No hay miembros para sortear"}
+          </AppText>
         </View>
       ) : null}
     </View>
