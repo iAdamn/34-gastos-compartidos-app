@@ -12,7 +12,7 @@
     },
     "android": {
       "package": "co.tdea.gastoscompartidos",
-      "versionCode": 2,
+      "versionCode": 3,
       "blockedPermissions": [
         "android.permission.SYSTEM_ALERT_WINDOW",
         "android.permission.READ_EXTERNAL_STORAGE",

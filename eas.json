@@ -10,7 +10,8 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://34-gastos-compartidos-api.vercel.app"
+        "EXPO_PUBLIC_API_URL": "https://34-gastos-compartidos-api.vercel.app",
+        "ORG_GRADLE_PROJECT_reactNativeArchitectures": "arm64-v8a"
       }
     }
   }
