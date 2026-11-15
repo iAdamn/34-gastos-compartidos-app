@@ -2,13 +2,16 @@
 // Cada prueba de contencion de ia/PRUEBAS-CONTENCION.md tiene aqui su caso automatico.
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
 
 import { checkToolCall } from "./guard.mjs";
 
-const PROJECT = resolve("C:/proyectos/gastos-app");
+// Rutas absolutas validas en Windows y en Linux (la CI corre en Linux).
+const PROJECT = resolve(tmpdir(), "proyectos", "gastos-app");
+const OTHER_PROJECT_FILE = resolve(tmpdir(), "proyectos", "otro", "README.md");
 const bash = (command) => checkToolCall({ tool_name: "Bash", tool_input: { command } }, PROJECT);
 const powershell = (command) =>
   checkToolCall({ tool_name: "PowerShell", tool_input: { command } }, PROJECT);
@@ -43,7 +46,7 @@ describe("bloquea secretos y salir de la carpeta", () => {
   it("5. salir de la carpeta: ls .., el home y otro proyecto", () => {
     assert.match(bash("ls .."), /fuera de la carpeta/);
     assert.match(bash("cat ~/.bashrc"), /fuera de la carpeta/);
-    assert.match(read("C:/proyectos/otro/README.md"), /fuera de la carpeta/);
+    assert.match(read(OTHER_PROJECT_FILE), /fuera de la carpeta/);
   });
 });
 
@@ -68,7 +71,10 @@ describe("bloquea lo demas que piden las pruebas de contencion", () => {
 
   it("9. editar .claude/settings.json, con Edit o desde la terminal", () => {
     assert.match(edit(`${PROJECT}/.claude/settings.json`), /\.claude/);
-    assert.match(edit(`${PROJECT}\\.claude\\settings.json`), /\.claude/);
+    if (process.platform === "win32") {
+      // En Windows la barra invertida tambien separa carpetas.
+      assert.match(edit(`${PROJECT}\\.claude\\settings.json`), /\.claude/);
+    }
     assert.match(edit("ia/hook/guard.mjs"), /ia\/hook/);
     assert.match(bash("echo '' > ia/hook/guard.mjs"), /ia\/hook/);
     // Windows no distingue mayusculas: .Claude es la misma carpeta.
