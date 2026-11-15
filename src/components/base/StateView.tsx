@@ -33,9 +33,11 @@ export function StateView({ state, message, onRetry }: Props) {
 
 const styles = StyleSheet.create({
   box: {
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: spacing.small,
+    gap: spacing.medium,
     padding: spacing.large,
+    backgroundColor: colors.background,
   },
 });

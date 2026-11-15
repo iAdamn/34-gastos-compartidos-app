@@ -2,7 +2,8 @@ import { StyleSheet, View } from "react-native";
 
 import { AppButton } from "@/components/base/AppButton";
 import { AppText } from "@/components/base/AppText";
-import { colors } from "@/components/base/theme";
+import { ButtonRow } from "@/components/base/ButtonRow";
+import { colors, radius, spacing } from "@/components/base/theme";
 import { formatCop } from "@/domain/money";
 import type { SuggestedPayment } from "@/domain/settle";
 import type { Member } from "@/types";
@@ -23,12 +24,21 @@ export function PaymentConfirm({ members, payment, onConfirm, onCancel }: Props)
   return (
     <View style={styles.box} accessibilityLiveRegion="polite">
       <AppText>{`Confirma que ${from} le pago ${formatCop(payment.monto_centavos)} a ${to}`}</AppText>
-      <AppButton label="Confirmar pago" onPress={onConfirm} />
-      <AppButton label="Cancelar" variant="secondary" onPress={onCancel} />
+      <ButtonRow>
+        <AppButton label="Confirmar pago" onPress={onConfirm} />
+        <AppButton label="Cancelar" variant="ghost" onPress={onCancel} />
+      </ButtonRow>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  box: { gap: 8, padding: 12, borderWidth: 1, borderColor: colors.border, borderRadius: 8 },
+  box: {
+    gap: spacing.medium - 4,
+    padding: spacing.medium,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: radius.large,
+    backgroundColor: colors.primarySoft,
+  },
 });

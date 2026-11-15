@@ -17,7 +17,7 @@ export default function NuevoGasto() {
     return <StateView state="loading" />;
   }
   return (
-    <Screen>
+    <Screen header scroll>
       <ExpenseFormView gid={gid} members={members} />
     </Screen>
   );

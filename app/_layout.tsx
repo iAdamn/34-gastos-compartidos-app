@@ -1,8 +1,10 @@
 import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { StateView } from "@/components/base/StateView";
+import { colors } from "@/components/base/theme";
 import { SessionProvider, useSession } from "@/providers/SessionProvider";
 
 // Rutas protegidas: sin sesion solo existe (auth); con sesion existen las demas.
@@ -12,7 +14,17 @@ function Routes() {
     return <StateView state="loading" />;
   }
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    // Barra de titulo oscura, sin sombra, con el boton de volver en naranja.
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        headerStyle: { backgroundColor: colors.background },
+        headerTintColor: colors.primary,
+        headerTitleStyle: { color: colors.text, fontWeight: "600" },
+        headerShadowVisible: false,
+        contentStyle: { backgroundColor: colors.background },
+      }}
+    >
       <Stack.Protected guard={!user}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
@@ -34,6 +46,7 @@ function Routes() {
 export default function RootLayout() {
   return (
     <GestureHandlerRootView style={styles.root}>
+      <StatusBar style="light" />
       <SessionProvider>
         <Routes />
       </SessionProvider>
@@ -42,5 +55,5 @@ export default function RootLayout() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1 },
+  root: { flex: 1, backgroundColor: colors.background },
 });

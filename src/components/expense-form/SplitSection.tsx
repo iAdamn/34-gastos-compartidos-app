@@ -1,6 +1,8 @@
 import { StyleSheet, View } from "react-native";
 
 import { AppText } from "@/components/base/AppText";
+import { Card } from "@/components/base/Card";
+import { spacing } from "@/components/base/theme";
 import type { Member } from "@/types";
 
 import { ChoiceButton } from "./ChoiceButton";
@@ -23,8 +25,8 @@ type Props = {
 export function SplitSection({ members, participantes, toggle, mode, chooseMode, ...rest }: Props) {
   const chosen = members.filter((member) => participantes.includes(member.uid));
   return (
-    <View style={styles.section}>
-      <AppText>Participantes: manten presionado un nombre o usa la casilla</AppText>
+    <Card title="Entre quienes se divide">
+      <AppText variant="muted">Participantes: manten presionado un nombre o usa la casilla</AppText>
       {members.map((member) => (
         <ParticipantRow
           key={member.uid}
@@ -46,7 +48,7 @@ export function SplitSection({ members, participantes, toggle, mode, chooseMode,
         />
       </View>
       {mode === "porcentajes" ? <PercentList chosen={chosen} {...rest} /> : null}
-    </View>
+    </Card>
   );
 }
 
@@ -70,6 +72,6 @@ function PercentList({ chosen, percents, changeOne }: PercentListProps) {
 }
 
 const styles = StyleSheet.create({
-  section: { gap: 8 },
-  choices: { flexDirection: "row", gap: 8, flexWrap: "wrap" },
+  section: { gap: spacing.small },
+  choices: { flexDirection: "row", gap: spacing.small, flexWrap: "wrap" },
 });

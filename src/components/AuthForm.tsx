@@ -1,9 +1,13 @@
 import { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 import { AppButton } from "@/components/base/AppButton";
 import { AppText } from "@/components/base/AppText";
+import { Card } from "@/components/base/Card";
+import { Notice } from "@/components/base/Notice";
 import { Screen } from "@/components/base/Screen";
 import { TextField } from "@/components/base/TextField";
+import { colors, radius, spacing } from "@/components/base/theme";
 import { validateCredentials } from "@/services/authService";
 
 type Props = {
@@ -39,19 +43,59 @@ export function AuthForm({ title, submitLabel, onSubmit, otherLabel, onOther }: 
   }
 
   return (
-    <Screen>
-      <AppText variant="title">{title}</AppText>
-      <TextField
-        label="Correo"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextField label="Contrasena" value={password} onChangeText={setPassword} secureTextEntry />
-      {error ? <AppText variant="error">{error}</AppText> : null}
-      <AppButton label={submitLabel} onPress={handleSubmit} disabled={busy} />
-      <AppButton label={otherLabel} onPress={onOther} variant="secondary" />
+    <Screen scroll>
+      <Brand />
+      <Card title={title}>
+        <TextField
+          label="Correo"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          placeholder="tu@correo.com"
+        />
+        <TextField
+          label="Contrasena"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          placeholder="Minimo 8 caracteres"
+        />
+        {error ? <Notice tone="error">{error}</Notice> : null}
+        <AppButton label={submitLabel} onPress={handleSubmit} disabled={busy} />
+      </Card>
+      <AppButton label={otherLabel} onPress={onOther} variant="ghost" />
     </Screen>
   );
 }
+
+// Nombre de la app y para que sirve, arriba del formulario.
+function Brand() {
+  return (
+    <View style={styles.brand}>
+      <View style={styles.logo} accessible={false}>
+        <Text style={styles.logoText}>$</Text>
+      </View>
+      <AppText variant="title" center>
+        Gastos compartidos
+      </AppText>
+      <AppText variant="muted" center>
+        Registra los gastos del grupo y salda cuentas con la menor cantidad de pagos.
+      </AppText>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  brand: { alignItems: "center", gap: spacing.small, paddingTop: spacing.xlarge },
+  logo: {
+    width: 64,
+    height: 64,
+    borderRadius: radius.large,
+    backgroundColor: colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: spacing.small,
+  },
+  logoText: { fontSize: 34, fontWeight: "800", color: colors.onPrimary },
+});

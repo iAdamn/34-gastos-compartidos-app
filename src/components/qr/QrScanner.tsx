@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import { AppButton } from "@/components/base/AppButton";
 import { AppText } from "@/components/base/AppText";
+import { radius, spacing } from "@/components/base/theme";
 import { useQrScanner, type ScannerStatus } from "@/sensors/useQrScanner";
 
 const STATUS_TEXT: Partial<Record<ScannerStatus, string>> = {
@@ -36,7 +37,6 @@ export function QrScanner({ onCode }: { onCode: (codigo: string) => void }) {
       <AppText variant="muted">La camara solo se usa para leer el QR del grupo</AppText>
       <AppButton
         label="Escanear codigo QR"
-        variant="secondary"
         disabled={scanner.status === "checking"}
         onPress={scanner.start}
       />
@@ -46,6 +46,6 @@ export function QrScanner({ onCode }: { onCode: (codigo: string) => void }) {
 }
 
 const styles = StyleSheet.create({
-  box: { gap: 8 },
-  camera: { height: 280, borderRadius: 8, overflow: "hidden" },
+  box: { gap: spacing.medium - 4 },
+  camera: { height: 280, borderRadius: radius.medium, overflow: "hidden" },
 });

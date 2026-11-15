@@ -1,24 +1,36 @@
 import type { ReactNode } from "react";
 import { StyleSheet, Text } from "react-native";
 
-import { colors } from "./theme";
+import { colors, fontSize } from "./theme";
 
-type Variant = "title" | "body" | "error" | "muted";
+type Variant =
+  "display" | "title" | "heading" | "body" | "muted" | "caption" | "error" | "success" | "accent";
 
-type Props = { children: ReactNode; variant?: Variant };
+type Props = { children: ReactNode; variant?: Variant; center?: boolean };
 
-// Texto de la app. El titulo se anuncia como encabezado para los lectores de pantalla.
-export function AppText({ children, variant = "body" }: Props) {
+const HEADERS: Variant[] = ["display", "title", "heading"];
+
+// Texto de la app. Los titulos se anuncian como encabezado para los lectores de pantalla.
+export function AppText({ children, variant = "body", center = false }: Props) {
   return (
-    <Text accessibilityRole={variant === "title" ? "header" : undefined} style={styles[variant]}>
+    <Text
+      accessibilityRole={HEADERS.includes(variant) ? "header" : undefined}
+      style={[styles[variant], center && styles.center]}
+    >
       {children}
     </Text>
   );
 }
 
 const styles = StyleSheet.create({
-  title: { fontSize: 24, fontWeight: "bold", color: colors.text },
-  body: { fontSize: 16, color: colors.text },
-  error: { fontSize: 14, color: colors.error },
-  muted: { fontSize: 14, color: colors.muted },
+  display: { fontSize: fontSize.display, fontWeight: "700", color: colors.text, letterSpacing: 1 },
+  title: { fontSize: fontSize.title, fontWeight: "700", color: colors.text },
+  heading: { fontSize: fontSize.heading, fontWeight: "600", color: colors.text },
+  body: { fontSize: fontSize.body, color: colors.text, lineHeight: 22 },
+  muted: { fontSize: fontSize.small, color: colors.muted, lineHeight: 20 },
+  caption: { fontSize: fontSize.caption, color: colors.muted, fontWeight: "600" },
+  error: { fontSize: fontSize.small, color: colors.error, lineHeight: 20 },
+  success: { fontSize: fontSize.body, color: colors.success, lineHeight: 22 },
+  accent: { fontSize: fontSize.body, color: colors.primary, fontWeight: "600", lineHeight: 22 },
+  center: { textAlign: "center" },
 });

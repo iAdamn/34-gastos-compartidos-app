@@ -1,4 +1,6 @@
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
+
+import { spacing } from "@/components/base/theme";
 
 import type { SuggestedPayment } from "@/domain/settle";
 import type { Member } from "@/types";
@@ -18,7 +20,7 @@ type Props = {
 // Pagos sugeridos y, si el usuario eligio uno, la confirmacion para registrarlo.
 export function PaymentsSection({ members, suggested, selected, ...handlers }: Props) {
   return (
-    <View>
+    <View style={styles.section}>
       <SuggestedPayments members={members} suggested={suggested} onSelect={handlers.onSelect} />
       {selected ? (
         <PaymentConfirm
@@ -31,3 +33,7 @@ export function PaymentsSection({ members, suggested, selected, ...handlers }: P
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  section: { gap: spacing.medium - 4 },
+});

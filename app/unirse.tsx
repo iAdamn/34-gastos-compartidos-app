@@ -4,6 +4,8 @@ import { useState } from "react";
 import { ApiClientError } from "@/api/client";
 import { AppButton } from "@/components/base/AppButton";
 import { AppText } from "@/components/base/AppText";
+import { Card } from "@/components/base/Card";
+import { Notice } from "@/components/base/Notice";
 import { Screen } from "@/components/base/Screen";
 import { TextField } from "@/components/base/TextField";
 import { QrScanner } from "@/components/qr/QrScanner";
@@ -45,17 +47,25 @@ export default function Unirse() {
   }
 
   return (
-    <Screen>
-      <QrScanner onCode={setCodigo} />
-      <TextField
-        label="Codigo del grupo"
-        value={codigo}
-        onChangeText={setCodigo}
-        autoCapitalize="characters"
-        maxLength={6}
-      />
-      <TextField label="Tu nombre" value={miNombre} onChangeText={setMiNombre} maxLength={30} />
-      {error ? <AppText variant="error">{error}</AppText> : null}
+    <Screen header scroll>
+      <Card title="Escanear QR">
+        <QrScanner onCode={setCodigo} />
+      </Card>
+      <AppText variant="caption" center>
+        O ESCRIBE EL CODIGO
+      </AppText>
+      <Card>
+        <TextField
+          label="Codigo del grupo"
+          value={codigo}
+          onChangeText={setCodigo}
+          autoCapitalize="characters"
+          maxLength={6}
+          placeholder="ABC234"
+        />
+        <TextField label="Tu nombre" value={miNombre} onChangeText={setMiNombre} maxLength={30} />
+        {error ? <Notice tone="error">{error}</Notice> : null}
+      </Card>
       <AppButton label="Unirme" onPress={handleJoin} disabled={busy} />
     </Screen>
   );

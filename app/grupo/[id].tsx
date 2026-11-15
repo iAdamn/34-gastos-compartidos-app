@@ -1,6 +1,4 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ScrollView, StyleSheet } from "react-native";
-
 import { AppButton } from "@/components/base/AppButton";
 import { Screen } from "@/components/base/Screen";
 import { StateView } from "@/components/base/StateView";
@@ -29,41 +27,47 @@ export default function Grupo() {
     return <StateView state="error" message="No se pudo cargar el grupo" onRetry={reload} />;
   }
   return (
-    <Screen>
-      <ScrollView contentContainerStyle={styles.content}>
-        <GroupHeader
-          group={detail.group}
-          offline={offline}
-          message={actions.message}
-          error={actions.error}
-        />
-        <AppButton
-          label="Registrar gasto"
-          onPress={() => router.push({ pathname: "/gasto/nuevo", params: { gid: id } })}
-        />
-        <BalanceList members={detail.members} balances={detail.balances} />
-        <PaymentsSection
-          members={detail.members}
-          suggested={detail.suggested}
-          selected={actions.selected}
-          onSelect={actions.selectPayment}
-          onConfirm={actions.confirmPayment}
-          onCancel={actions.cancelPayment}
-        />
-        <Raffle members={detail.members} />
-        <TextField label="Buscar gasto" value={search} onChangeText={setSearch} />
-        <ExpenseList
-          expenses={detail.expenses}
-          members={detail.members}
-          searching={!!search}
-          canDeleteExpense={actions.canDeleteExpense}
-          onDelete={actions.removeExpense}
-        />
-      </ScrollView>
+    <Screen header scroll>
+      <GroupHeader
+        group={detail.group}
+        offline={offline}
+        message={actions.message}
+        error={actions.error}
+      />
+      <AppButton
+        label="Registrar gasto"
+        onPress={() => router.push({ pathname: "/gasto/nuevo", params: { gid: id } })}
+      />
+      <BalanceList members={detail.members} balances={detail.balances} />
+      <PaymentsSection
+        members={detail.members}
+        suggested={detail.suggested}
+        selected={actions.selected}
+        onSelect={actions.selectPayment}
+        onConfirm={actions.confirmPayment}
+        onCancel={actions.cancelPayment}
+      />
+      <ExpenseList
+        header={<SearchField value={search} onChange={setSearch} />}
+        expenses={detail.expenses}
+        members={detail.members}
+        searching={!!search}
+        canDeleteExpense={actions.canDeleteExpense}
+        onDelete={actions.removeExpense}
+      />
+      <Raffle members={detail.members} />
     </Screen>
   );
 }
 
-const styles = StyleSheet.create({
-  content: { gap: 16 },
-});
+// Buscador de gastos por descripcion, arriba de la lista.
+function SearchField({ value, onChange }: { value: string; onChange: (text: string) => void }) {
+  return (
+    <TextField
+      label="Buscar gasto"
+      value={value}
+      onChangeText={onChange}
+      placeholder="Mercado, taxi..."
+    />
+  );
+}

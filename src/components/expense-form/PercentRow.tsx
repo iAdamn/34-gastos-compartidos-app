@@ -13,14 +13,16 @@ export function PercentRow({ nombre, percent, onChange, step }: Props) {
         <AppText>{`${nombre}: ${percent} %`}</AppText>
       </View>
       <AppButton
-        label="-"
+        label="−"
         variant="secondary"
+        compact
         accessibilityLabel={`Bajar porcentaje de ${nombre}`}
         onPress={() => onChange(-step)}
       />
       <AppButton
         label="+"
         variant="secondary"
+        compact
         accessibilityLabel={`Subir porcentaje de ${nombre}`}
         onPress={() => onChange(step)}
       />
@@ -29,6 +31,6 @@ export function PercentRow({ nombre, percent, onChange, step }: Props) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: "row", alignItems: "center", gap: 8 },
+  row: { flexDirection: "row", alignItems: "center", gap: 8, minHeight: 48 },
   label: { flex: 1 },
 });

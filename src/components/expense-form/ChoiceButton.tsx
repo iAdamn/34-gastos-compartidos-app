@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text } from "react-native";
 
-import { colors } from "@/components/base/theme";
+import { colors, fontSize, radius } from "@/components/base/theme";
 
 type Props = {
   label: string;
@@ -9,7 +9,7 @@ type Props = {
   accessibilityLabel?: string;
 };
 
-// Opcion de una lista donde solo se elige una (quien pago, modo de reparto).
+// Opcion de una lista donde solo se elige una (quien pago, modo de reparto). La elegida va en naranja.
 export function ChoiceButton({ label, selected, onPress, accessibilityLabel }: Props) {
   return (
     <Pressable
@@ -17,25 +17,31 @@ export function ChoiceButton({ label, selected, onPress, accessibilityLabel }: P
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={{ selected }}
       onPress={onPress}
-      style={[styles.choice, selected && styles.selected]}
+      style={({ pressed }) => [
+        styles.choice,
+        selected && styles.selected,
+        pressed && !selected && styles.pressed,
+      ]}
     >
-      <Text style={selected ? styles.selectedText : styles.text}>{label}</Text>
+      <Text style={[styles.text, selected && styles.selectedText]}>{label}</Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   choice: {
-    minHeight: 48,
+    minHeight: 44,
     minWidth: 48,
-    paddingHorizontal: 12,
-    borderRadius: 8,
+    paddingHorizontal: 16,
+    borderRadius: radius.pill,
     borderWidth: 1,
-    borderColor: colors.primary,
+    borderColor: colors.border,
+    backgroundColor: colors.surfaceRaised,
     alignItems: "center",
     justifyContent: "center",
   },
-  selected: { backgroundColor: colors.primary },
-  text: { fontSize: 16, color: colors.primary },
-  selectedText: { fontSize: 16, color: colors.onPrimary },
+  selected: { backgroundColor: colors.primary, borderColor: colors.primary },
+  pressed: { borderColor: colors.primary },
+  text: { fontSize: fontSize.body, color: colors.text, fontWeight: "500" },
+  selectedText: { color: colors.onPrimary, fontWeight: "700" },
 });

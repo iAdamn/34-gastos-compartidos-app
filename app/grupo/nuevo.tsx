@@ -3,6 +3,8 @@ import { useState } from "react";
 
 import { AppButton } from "@/components/base/AppButton";
 import { AppText } from "@/components/base/AppText";
+import { Card } from "@/components/base/Card";
+import { Notice } from "@/components/base/Notice";
 import { Screen } from "@/components/base/Screen";
 import { TextField } from "@/components/base/TextField";
 import { useSession } from "@/providers/SessionProvider";
@@ -37,22 +39,49 @@ export default function NuevoGrupo() {
 
   // Cuando el grupo ya se creo se muestra el codigo para compartirlo.
   if (codigo) {
-    return (
-      <Screen>
-        <AppText variant="title">Grupo creado</AppText>
-        <AppText>Comparte este codigo con tus amigos:</AppText>
-        <AppText variant="title">{codigo}</AppText>
-        <AppButton label="Listo" onPress={() => router.back()} />
-      </Screen>
-    );
+    return <GroupCreated codigo={codigo} onDone={() => router.back()} />;
   }
 
   return (
-    <Screen>
-      <TextField label="Nombre del grupo" value={nombre} onChangeText={setNombre} maxLength={40} />
-      <TextField label="Tu nombre" value={miNombre} onChangeText={setMiNombre} maxLength={30} />
-      {error ? <AppText variant="error">{error}</AppText> : null}
+    <Screen header scroll>
+      <Card>
+        <AppText variant="muted">
+          Crea el grupo y comparte el codigo para que tus amigos se unan.
+        </AppText>
+        <TextField
+          label="Nombre del grupo"
+          value={nombre}
+          onChangeText={setNombre}
+          maxLength={40}
+          placeholder="Viaje a Cartagena"
+        />
+        <TextField label="Tu nombre" value={miNombre} onChangeText={setMiNombre} maxLength={30} />
+        {error ? <Notice tone="error">{error}</Notice> : null}
+      </Card>
       <AppButton label="Crear grupo" onPress={handleCreate} disabled={busy} />
+    </Screen>
+  );
+}
+
+// Cuando el grupo ya se creo se muestra el codigo grande para compartirlo.
+function GroupCreated({ codigo, onDone }: { codigo: string; onDone: () => void }) {
+  return (
+    <Screen header scroll>
+      <Card>
+        <AppText variant="title" center>
+          Grupo creado
+        </AppText>
+        <AppText variant="muted" center>
+          Comparte este codigo con tus amigos:
+        </AppText>
+        <AppText variant="display" center>
+          {codigo}
+        </AppText>
+        <AppText variant="muted" center>
+          Tambien pueden escanear el QR desde la pantalla del grupo.
+        </AppText>
+      </Card>
+      <AppButton label="Listo" onPress={onDone} />
     </Screen>
   );
 }

@@ -3,7 +3,9 @@ import { StyleSheet, View } from "react-native";
 
 import { AppButton } from "@/components/base/AppButton";
 import { AppText } from "@/components/base/AppText";
-import { SectionTitle } from "@/components/group-detail/SectionTitle";
+import { ButtonRow } from "@/components/base/ButtonRow";
+import { Card } from "@/components/base/Card";
+import { colors, radius, spacing } from "@/components/base/theme";
 import { useShake, type ShakeStatus } from "@/sensors/useShake";
 import type { Member } from "@/types";
 
@@ -30,35 +32,41 @@ export function Raffle({ members, random = Math.random }: Props) {
   const message = STATUS_TEXT[shake.status];
 
   return (
-    <View style={styles.box}>
-      <SectionTitle>Quien paga la proxima</SectionTitle>
-      <AppButton label="Sortear" onPress={draw} />
+    <Card title="Quien paga la proxima">
       <AppText variant="muted">
         El acelerometro solo se usa para notar cuando sacudes el telefono
       </AppText>
-      {shake.status === "on" ? (
-        <AppButton label="Desactivar sacudir" variant="secondary" onPress={shake.disable} />
-      ) : (
-        <AppButton
-          label="Activar sacudir para sortear"
-          variant="secondary"
-          disabled={shake.status === "checking"}
-          onPress={shake.enable}
-        />
-      )}
+      <ButtonRow>
+        <AppButton label="Sortear" onPress={draw} />
+        {shake.status === "on" ? (
+          <AppButton label="Desactivar sacudir" variant="secondary" onPress={shake.disable} />
+        ) : (
+          <AppButton
+            label="Activar sacudir para sortear"
+            variant="secondary"
+            disabled={shake.status === "checking"}
+            onPress={shake.enable}
+          />
+        )}
+      </ButtonRow>
       {message ? <AppText variant="muted">{message}</AppText> : null}
       {round > 0 ? (
-        <View accessibilityLiveRegion="polite">
-          <AppText variant="muted">{`Sorteo ${round}`}</AppText>
-          <AppText>
+        <View style={styles.result} accessibilityLiveRegion="polite">
+          <AppText variant="caption">{`Sorteo ${round}`}</AppText>
+          <AppText variant="accent">
             {winner ? `Paga la proxima: ${winner}` : "No hay miembros para sortear"}
           </AppText>
         </View>
       ) : null}
-    </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  box: { gap: 8 },
+  result: {
+    gap: spacing.xsmall,
+    padding: spacing.medium - 4,
+    borderRadius: radius.medium,
+    backgroundColor: colors.primarySoft,
+  },
 });

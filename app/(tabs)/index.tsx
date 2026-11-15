@@ -1,11 +1,14 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { AppButton } from "@/components/base/AppButton";
 import { AppText } from "@/components/base/AppText";
+import { ButtonRow } from "@/components/base/ButtonRow";
+import { Notice } from "@/components/base/Notice";
 import { Screen } from "@/components/base/Screen";
 import { StateView } from "@/components/base/StateView";
+import { colors, radius, spacing } from "@/components/base/theme";
 import { useSession } from "@/providers/SessionProvider";
 import { listLocalGroups } from "@/services/groupsService";
 import { syncEverything } from "@/services/sync";
@@ -44,22 +47,27 @@ export default function MisGrupos() {
 
   return (
     <Screen>
-      <AppText variant="title">Mis grupos</AppText>
-      {offline ? <AppText variant="muted">Sin conexion, mostrando datos guardados</AppText> : null}
+      <View style={styles.header}>
+        <View style={styles.headerText}>
+          <AppText variant="caption">GASTOS COMPARTIDOS</AppText>
+          <AppText variant="title">Mis grupos</AppText>
+        </View>
+        <AppButton label="Cerrar sesion" variant="ghost" compact onPress={() => signOut()} />
+      </View>
+      {offline ? <Notice tone="warning">Sin conexion, mostrando datos guardados</Notice> : null}
       {status === "loading" ? <StateView state="loading" /> : null}
       {status === "error" ? (
         <StateView state="error" message="No se pudieron cargar tus grupos" onRetry={load} />
       ) : null}
       {status === "ready" ? <GroupList groups={groups} /> : null}
-      <View style={styles.actions}>
+      <ButtonRow>
         <AppButton label="Crear grupo" onPress={() => router.push("/grupo/nuevo")} />
         <AppButton
           label="Unirme a un grupo"
           variant="secondary"
           onPress={() => router.push("/unirse")}
         />
-        <AppButton label="Cerrar sesion" variant="secondary" onPress={() => signOut()} />
-      </View>
+      </ButtonRow>
     </Screen>
   );
 }
@@ -72,16 +80,24 @@ function GroupList({ groups }: { groups: LocalGroup[] }) {
   return (
     <FlatList
       data={groups}
+      style={styles.list}
+      contentContainerStyle={styles.listContent}
       keyExtractor={(group) => group.id}
       renderItem={({ item }) => (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={`Abrir ${item.nombre}`}
           onPress={() => router.push({ pathname: "/grupo/[id]", params: { id: item.id } })}
-          style={styles.card}
+          style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
         >
-          <AppText>{item.nombre}</AppText>
-          <AppText variant="muted">{`Codigo: ${item.codigo}`}</AppText>
+          <View style={styles.initial}>
+            <Text style={styles.initialText}>{item.nombre.slice(0, 1).toUpperCase()}</Text>
+          </View>
+          <View style={styles.cardText}>
+            <AppText variant="heading">{item.nombre}</AppText>
+            <AppText variant="muted">{`Codigo: ${item.codigo}`}</AppText>
+          </View>
+          <Text style={styles.chevron}>›</Text>
         </Pressable>
       )}
     />
@@ -89,11 +105,31 @@ function GroupList({ groups }: { groups: LocalGroup[] }) {
 }
 
 const styles = StyleSheet.create({
-  actions: { gap: 8 },
+  header: { flexDirection: "row", alignItems: "center", gap: spacing.small },
+  headerText: { flex: 1, gap: 2 },
+  list: { flex: 1 },
+  listContent: { gap: spacing.small + 2, paddingBottom: spacing.small },
   card: {
-    minHeight: 48,
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: "#6b7280",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.medium - 4,
+    minHeight: 72,
+    padding: spacing.medium - 2,
+    borderRadius: radius.large,
+    backgroundColor: colors.surface,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
+  cardPressed: { backgroundColor: colors.surfaceRaised },
+  initial: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.medium,
+    backgroundColor: colors.primarySoft,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  initialText: { fontSize: 20, fontWeight: "700", color: colors.primary },
+  cardText: { flex: 1, gap: 2 },
+  chevron: { fontSize: 28, color: colors.muted },
 });

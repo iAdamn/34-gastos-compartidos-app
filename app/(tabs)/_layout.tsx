@@ -1,9 +1,17 @@
 import { Tabs } from "expo-router";
 
-// Pestanas de la app con sesion. Por ahora solo "Mis grupos"; el resto se agrega despues.
+import { colors } from "@/components/base/theme";
+
+// Pestanas de la app con sesion. Hay una sola ("Mis grupos"), asi que la barra de abajo se oculta.
 export default function TabsLayout() {
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: { display: "none" },
+        sceneStyle: { backgroundColor: colors.background },
+      }}
+    >
       <Tabs.Screen name="index" options={{ title: "Mis grupos" }} />
     </Tabs>
   );

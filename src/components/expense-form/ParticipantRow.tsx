@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { GestureDetector, useLongPressGesture } from "react-native-gesture-handler";
 
 import { AppText } from "@/components/base/AppText";
-import { colors } from "@/components/base/theme";
+import { colors, radius, spacing } from "@/components/base/theme";
 import type { Member } from "@/types";
 
 type Props = { member: Member; checked: boolean; onToggle: () => void };
@@ -28,7 +28,7 @@ export function ParticipantRow({ member, checked, onToggle }: Props) {
         accessibilityLabel={`Participa ${member.nombre}`}
         accessibilityState={{ checked }}
         onPress={onToggle}
-        style={styles.box}
+        style={[styles.box, checked && styles.boxChecked]}
       >
         <Text style={styles.mark}>{checked ? "✓" : ""}</Text>
       </Pressable>
@@ -37,16 +37,26 @@ export function ParticipantRow({ member, checked, onToggle }: Props) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: "row", alignItems: "center", gap: 8 },
-  name: { flex: 1, minHeight: 48, justifyContent: "center" },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.small,
+    paddingLeft: spacing.medium - 4,
+    paddingRight: spacing.xsmall,
+    borderRadius: radius.medium,
+    backgroundColor: colors.surfaceRaised,
+  },
+  name: { flex: 1, minHeight: 52, justifyContent: "center" },
   box: {
-    width: 48,
-    height: 48,
+    width: 44,
+    height: 44,
+    margin: spacing.xsmall,
     borderWidth: 2,
     borderColor: colors.primary,
-    borderRadius: 8,
+    borderRadius: radius.small,
     alignItems: "center",
     justifyContent: "center",
   },
-  mark: { fontSize: 22, color: colors.primary },
+  boxChecked: { backgroundColor: colors.primary },
+  mark: { fontSize: 22, fontWeight: "800", color: colors.onPrimary },
 });
