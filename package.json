@@ -52,8 +52,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "jest --coverage",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test",
-    "prepare": "husky"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test && npm run test:hook",
+    "prepare": "husky",
+    "test:hook": "node --test ia/hook/guard.test.mjs"
   },
   "private": true
 }
