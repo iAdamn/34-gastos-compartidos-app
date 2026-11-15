@@ -1,11 +1,13 @@
 # Estado de 34-gastos-compartidos-app
 
-- Fase: todas las pantallas del enunciado listas, con los 2 gestos y los 2 sensores, mas vibracion al registrar un pago. 173 pruebas. Todavia no se ha corrido en un telefono.
+- Fase: app completa y probada en un telefono real (APK y Expo Go) contra la API real. Tema oscuro negro, gris y naranja. 180 pruebas de Jest y 16 del hook. Repo publico: https://github.com/iAdamn/34-gastos-compartidos-app (CI de GitHub Actions).
 - API real: https://34-gastos-compartidos-api.vercel.app (en eas.json). Primera APK en EAS (perfil preview, cuenta adnsupreme). Para Expo Go: npx expo start --go con EXPO_PUBLIC_API_URL apuntando a esa URL.
-- Siguiente paso: instalar la APK y probar en un telefono fisico (lista en "Por verificar en telefono"), revision del hito por un chat distinto (A12 y A17). Sigue pendiente A3 (Husky, CI y plantilla de PR).
+- Siguiente paso: la persona activa el hook (ia/hook/README.md), crea el canario y corre las 10 pruebas de contencion con capturas (C2, C5); README con capturas (A27); revision de hitos por otro chat (A12, A17, A23); video (A25); el companero hace sus commits.
 - Fecha limite: sabado 2026-11-21.
 
 ## Que se hizo
+
+- 2026-11-14 (Opus): arreglo de rutas sin sesion (+not-found manda al login), sorteo que siempre se nota, rediseno visual (Card, ButtonRow, Notice, tema oscuro), A3 (Husky, lint-staged, CI y plantilla de PR), C3 (hook PreToolUse en ia/hook con 16 pruebas node:test, protege su propia carpeta), docs/trampa.md e ia/PRUEBAS-CONTENCION.md con los 10 prompts. Repos subidos a GitHub como publicos por pedido de la persona. APK v4 (arm64) con todo esto.
 
 - A24 (2026-11-14, Opus): eas.json con perfil preview (APK, EXPO_PUBLIC_API_URL de la API real), android.package co.tdea.gastoscompartidos, versionCode 1, permisos bloqueados (SYSTEM_ALERT_WINDOW y almacenamiento) y scripts/check-secrets.mjs (busca firebaseConfig, claves, localhost y http sin s; se probo con una clave falsa plantada). eas init vinculo el proyecto @adnsupreme/34-gastos-compartidos-app. A25: primer eas build lanzado por la IA con permiso de la persona.
 
