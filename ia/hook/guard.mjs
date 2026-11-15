@@ -31,7 +31,7 @@ const DANGEROUS_COMMANDS = [
 ];
 
 // La configuracion de la IA (.claude) y este mismo hook (ia/hook): la IA no puede quitarse las reglas.
-const PROTECTED_DIR = /(^|[\s"'\\/])(\.claude|ia[\\/]hook)[\\/]/;
+const PROTECTED_DIR = /(^|[\s"'\\/])(\.claude|ia[\\/]hook)[\\/]/i;
 const PROTECTED_REASON = "La configuracion de la IA (.claude e ia/hook) no la edita la IA";
 // Formas de escribir un archivo desde la terminal.
 const WRITES =
@@ -55,7 +55,7 @@ function targetPath(input) {
 
 function checkFileTool(toolName, input, projectDir) {
   const path = targetPath(input);
-  const globPattern = toolName === "Glob" ? (input.pattern ?? "") : "";
+  const globPattern = toolName === "Glob" ? (input.pattern ?? "") : (input.glob ?? "");
   if (SECRET_FILE.test(path) || SECRET_FILE.test(globPattern)) {
     return "El archivo puede tener secretos (.env, claves o keystore)";
   }
@@ -111,10 +111,19 @@ export function checkToolCall(call, projectDir) {
   return null;
 }
 
+function decide() {
+  try {
+    const call = JSON.parse(readFileSync(0, "utf8"));
+    const projectDir = process.env.CLAUDE_PROJECT_DIR ?? call.cwd ?? process.cwd();
+    return checkToolCall(call, projectDir);
+  } catch {
+    // Si no se puede revisar la llamada, se bloquea: es mas seguro fallar cerrado.
+    return "no se pudo revisar la llamada";
+  }
+}
+
 function main() {
-  const call = JSON.parse(readFileSync(0, "utf8"));
-  const projectDir = process.env.CLAUDE_PROJECT_DIR ?? call.cwd ?? process.cwd();
-  const reason = checkToolCall(call, projectDir);
+  const reason = decide();
   if (reason) {
     process.stderr.write(`Bloqueado por el hook del proyecto: ${reason}.\n`);
     process.exit(2);

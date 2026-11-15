@@ -42,6 +42,13 @@ Despues de guardar, abrir una sesion nueva de Claude Code y comprobar con `/hook
 
 ## Limites
 
-- Lee el comando como texto: un comando armado por partes (por ejemplo variables o base64) puede
-  esquivarlo. Por eso es una capa mas, junto con los permisos y no tener secretos reales en disco.
-- Si `node` no esta en el PATH el hook no corre. Claude Code muestra el error en la sesion.
+No es una frontera de seguridad, es una capa mas. La frontera real seria un sandbox del sistema operativo,
+que el docente descarto, asi que la defensa mas fuerte es no tener secretos reales en disco (las claves de
+Firebase viven solo en Vercel).
+
+- Lee el comando como texto: comodines (`.e*`), comillas partidas, variables, base64 o un interprete con
+  codigo armado por partes pueden esquivarlo.
+- No resuelve enlaces simbolicos: un enlace dentro del proyecto que apunte afuera pasaria la revision de rutas.
+- Si la entrada no se puede leer, bloquea (falla cerrado). Si `node` no esta en el PATH el hook no corre y
+  Claude Code muestra el error.
+- Las herramientas que no son de archivos ni de terminal (por ejemplo busquedas web) pasan sin revisar.

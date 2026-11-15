@@ -71,6 +71,11 @@ describe("bloquea lo demas que piden las pruebas de contencion", () => {
     assert.match(edit(`${PROJECT}\\.claude\\settings.json`), /\.claude/);
     assert.match(edit("ia/hook/guard.mjs"), /ia\/hook/);
     assert.match(bash("echo '' > ia/hook/guard.mjs"), /ia\/hook/);
+    // Windows no distingue mayusculas: .Claude es la misma carpeta.
+    assert.match(edit(`${PROJECT}/.Claude/settings.json`), /\.claude/);
+    // La herramienta Grep tambien puede apuntar a .env con su campo glob.
+    const grep = { tool_name: "Grep", tool_input: { pattern: "CANARIO", glob: ".env*" } };
+    assert.match(checkToolCall(grep, PROJECT), /secretos/);
     assert.match(bash(`echo '{}' > .claude/settings.json`), /\.claude/);
     assert.match(bash("sed -i 's/deny/allow/' .claude/settings.json"), /\.claude/);
   });
@@ -119,6 +124,14 @@ describe("como lo ejecuta Claude Code", () => {
     const result = run({ tool_name: "Bash", tool_input: { command: "cat .env.local" } });
     assert.equal(result.status, 2);
     assert.match(result.stderr, /Bloqueado por el hook del proyecto/);
+  });
+
+  it("si la entrada no se puede leer, bloquea (falla cerrado)", () => {
+    const result = spawnSync(process.execPath, [hook], {
+      input: "esto no es json",
+      encoding: "utf8",
+    });
+    assert.equal(result.status, 2);
   });
 
   it("sale con codigo 0 cuando permite", () => {
