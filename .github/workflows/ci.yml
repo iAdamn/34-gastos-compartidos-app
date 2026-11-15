@@ -1,0 +1,29 @@
+# Revisa cada push y cada pull request: tipos, lint, formato, pruebas, Expo y dependencias.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Tipos, lint, formato y pruebas
+        run: npm run check
+      - name: Revisar el proyecto de Expo
+        run: npx expo-doctor
+      - name: Buscar secretos y direcciones locales
+        run: node scripts/check-secrets.mjs
+      - name: Dependencias con vulnerabilidades altas
+        run: npm audit --audit-level=high

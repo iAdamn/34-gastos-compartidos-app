@@ -35,8 +35,10 @@
     "@types/react": "~19.3.0",
     "eslint": "^9.39.5",
     "eslint-config-expo": "~58.0.4",
+    "husky": "9.1.7",
     "jest": "~30.5.2",
     "jest-expo": "~58.0.14",
+    "lint-staged": "17.6.0",
     "prettier": "^3.10.1",
     "test-renderer": "^1.3.1",
     "typescript": "~6.0.3"
@@ -50,7 +52,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "jest --coverage",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test",
+    "prepare": "husky"
   },
   "private": true
 }
