@@ -35,7 +35,7 @@ const PROTECTED_DIR = /(^|[\s"'\\/])(\.claude|ia[\\/]hook)[\\/]/i;
 const PROTECTED_REASON = "La configuracion de la IA (.claude e ia/hook) no la edita la IA";
 // Formas de escribir un archivo desde la terminal.
 const WRITES =
-  /(>|\btee\b|\bsed\s+-i|\bcp\b|\bmv\b|\brm\b|Set-Content|Out-File|Remove-Item|writeFile)/;
+  /(>|\btee\b|\bsed\s+-i|\bcp\b|\bmv\b|\brm\b|Set-Content|Out-File|Remove-Item|writeFile)/i;
 
 const FILE_TOOLS = new Set(["Read", "Edit", "Write", "MultiEdit", "NotebookEdit", "Grep", "Glob"]);
 const SHELL_TOOLS = new Set(["Bash", "PowerShell"]);
