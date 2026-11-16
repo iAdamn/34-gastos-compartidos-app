@@ -7,33 +7,40 @@ Hecha con Expo, React Native, TypeScript y Expo Router. La API esta en el repo `
 
 ## Como instalar y correr
 
+Hace falta Node 22.5 o mayor (las pruebas de los repositorios usan `node:sqlite`; la CI usa Node 24).
+
 ```bash
 npm install
+cp env.example .env   # y cambiar la URL de la API
 npm start
 ```
 
-Se abre con Expo Go o con un emulador. La URL de la API va en un archivo `.env`, copiando `env.example`.
-Esa URL es publica, no es un secreto.
+Se abre con Expo Go o con un emulador. La URL de la API va en el archivo `.env` (`EXPO_PUBLIC_API_URL`).
+Esa URL es publica, no es un secreto. La API publicada esta en https://34-gastos-compartidos-api.vercel.app.
 
 ## Comandos
 
-| Comando                | Que hace                                          |
-| ---------------------- | ------------------------------------------------- |
-| `npm start`            | Abre Expo                                         |
-| `npm run android`      | Abre Expo en Android                              |
-| `npm run typecheck`    | Revisa los tipos con TypeScript                   |
-| `npm run lint`         | ESLint, no acepta warnings                        |
-| `npm run format`       | Arregla el formato con Prettier                   |
-| `npm run format:check` | Revisa el formato sin cambiar nada                |
-| `npm test`             | Pruebas con cobertura                             |
-| `npm run check`        | Corre typecheck, lint, format:check y las pruebas |
+| Comando                | Que hace                                              |
+| ---------------------- | ----------------------------------------------------- |
+| `npm start`            | Abre Expo                                             |
+| `npm run android`      | Abre Expo en Android                                  |
+| `npm run ios`          | Abre Expo en iOS                                      |
+| `npm run typecheck`    | Revisa los tipos con TypeScript                       |
+| `npm run lint`         | ESLint, no acepta warnings                            |
+| `npm run format`       | Arregla el formato con Prettier                       |
+| `npm run format:check` | Revisa el formato sin cambiar nada                    |
+| `npm test`             | Pruebas con cobertura                                 |
+| `npm run test:hook`    | Pruebas del hook de IA (`ia/hook/`)                   |
+| `npm run check`        | Corre typecheck, lint, format:check, test y test:hook |
 
 Si `npm run check` no pasa, el trabajo no esta terminado.
 
 ## Estructura
 
 - `app/` pantallas y rutas
-- `src/` logica, base de datos, servicios, sensores y componentes (se va llenando con el plan)
+- `src/` dominio (`domain`), base de datos (`db`), repositorios, servicios, cliente de la API (`api`), sensores y componentes
+- `scripts/` revision de secretos y direcciones locales
+- `ia/` bitacora, retos y el hook de IA
 - `tests/` pruebas
 - `docs/` enunciado, reglas de negocio, contrato de la API, plan y estado
 
@@ -61,6 +68,8 @@ Las que se agregaron:
 | `@types/jest`                                 | Tipos de Jest para TypeScript                                                                             |
 | `eslint`, `eslint-config-expo`                | Reglas de calidad                                                                                         |
 | `prettier`                                    | Formato igual en todo el codigo                                                                           |
+| `typescript`, `@types/react`                  | Tipos estrictos en todo el codigo                                                                         |
+| `husky`, `lint-staged`                        | Revisar lo modificado al commitear y correr `npm run check` al hacer push                                 |
 | `@types/node`                                 | Tipos de Node, para usar su SQLite en las pruebas de los repositorios                                     |
 | `expo-sqlite`                                 | Base de datos local, la app funciona sin conexion                                                         |
 | `expo-secure-store`                           | Guardar los tokens de sesion de forma segura                                                              |
@@ -77,3 +86,17 @@ Se quitaron de la plantilla porque no se usan: `@expo/ui`, `expo-glass-effect`, 
 ## IA
 
 La configuracion de IA y sus evidencias estan en `IA.md` y en la carpeta `ia/`.
+
+## APK
+
+El APK se genera con EAS Build, perfil `preview` de `eas.json`, que ya trae la URL de la API y compila solo para telefonos arm64:
+
+```bash
+eas build -p android --profile preview
+```
+
+Enlace de descarga: pendiente: las agrega la persona.
+
+## Capturas
+
+Pendiente: las agrega la persona.
