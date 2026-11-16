@@ -7,6 +7,8 @@ import type { SessionUser } from "@/types";
 const TOKEN_KEY = "token";
 const REFRESH_KEY = "refreshToken";
 const USER_KEY = "usuario";
+// Uid del dueno de los datos guardados en SQLite. No se borra cuando la sesion vence.
+const OWNER_KEY = "duenoDatos";
 
 export const tokenStore: TokenStore = {
   async get(): Promise<Tokens | null> {
@@ -24,6 +26,14 @@ export const tokenStore: TokenStore = {
     await SecureStore.deleteItemAsync(USER_KEY);
   },
 };
+
+export function loadDataOwner(): Promise<string | null> {
+  return SecureStore.getItemAsync(OWNER_KEY);
+}
+
+export async function saveDataOwner(uid: string): Promise<void> {
+  await SecureStore.setItemAsync(OWNER_KEY, uid);
+}
 
 export async function saveUser(user: SessionUser): Promise<void> {
   await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user));

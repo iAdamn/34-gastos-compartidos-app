@@ -3,7 +3,7 @@ import { getDatabase } from "@/db/database";
 import { clearAll } from "@/repositories/groupsRepository";
 import type { SessionUser } from "@/types";
 
-import { saveUser, tokenStore } from "./session";
+import { loadDataOwner, saveDataOwner, saveUser, tokenStore } from "./session";
 
 // Guarda los tokens y el usuario que devolvio la API.
 async function startSession(session: {
@@ -11,6 +11,13 @@ async function startSession(session: {
   refreshToken: string;
   usuario: SessionUser;
 }): Promise<SessionUser> {
+  // Si la sesion anterior vencio, los datos de esa persona siguen en el telefono.
+  // Si ahora entra otra persona se borran. Si es la misma se conservan, con sus pendientes.
+  const owner = await loadDataOwner();
+  if (owner !== null && owner !== session.usuario.id) {
+    await clearAll(await getDatabase());
+  }
+  await saveDataOwner(session.usuario.id);
   await tokenStore.set({ token: session.token, refreshToken: session.refreshToken });
   await saveUser(session.usuario);
   return session.usuario;
