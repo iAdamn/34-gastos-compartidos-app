@@ -6,3 +6,4 @@ package-lock.json
 expo-env.d.ts
 docs/enunciado.md
 assets
+.claude
