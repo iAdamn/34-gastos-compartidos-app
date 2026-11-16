@@ -96,6 +96,17 @@ describe("cliente de la API", () => {
     expect(onExpired).toHaveBeenCalledTimes(1);
   });
 
+  it("si la API falla al renovar (500) no cierra la sesion", async () => {
+    const store = memoryStore(tokens);
+    const onExpired = jest.fn();
+    mockFetch([jsonResponse(401, { error: "x" }), jsonResponse(500, { error: "Error interno" })]);
+    const client = createApiClient("https://api.test", store, onExpired);
+
+    await expect(client.request("GET", "/api/grupos")).rejects.toMatchObject({ status: 500 });
+    expect(store.current).toEqual(tokens);
+    expect(onExpired).not.toHaveBeenCalled();
+  });
+
   it("no reintenta mas de una vez", async () => {
     const calls = mockFetch([
       jsonResponse(401, { error: "x" }),

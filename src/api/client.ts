@@ -68,12 +68,16 @@ export function createApiClient(
   onSessionExpired: () => void,
 ): ApiClient {
   // Pide un token nuevo con el refreshToken. Devuelve null si la sesion ya no sirve.
+  // Si la API falla por otra cosa (500, 429) lanza el error y la sesion se conserva.
   async function refresh(current: Tokens): Promise<Tokens | null> {
     const result = await send(`${baseUrl}/api/auth/refresh`, "POST", {
       refreshToken: current.refreshToken,
     });
-    if (result.status !== 200 || typeof result.data !== "object" || result.data === null) {
+    if (result.status === 400 || result.status === 401) {
       return null;
+    }
+    if (result.status !== 200 || typeof result.data !== "object" || result.data === null) {
+      throw new ApiClientError(result.status, errorMessage(result.data));
     }
     const data: { token?: unknown; refreshToken?: unknown } = result.data;
     const renewed = { token: String(data.token), refreshToken: String(data.refreshToken) };
