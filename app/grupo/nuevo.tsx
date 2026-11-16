@@ -7,6 +7,7 @@ import { Card } from "@/components/base/Card";
 import { Notice } from "@/components/base/Notice";
 import { Screen } from "@/components/base/Screen";
 import { TextField } from "@/components/base/TextField";
+import { GroupQr } from "@/components/qr/GroupQr";
 import { useSession } from "@/providers/SessionProvider";
 import { createGroup, validateGroupForm } from "@/services/groupsService";
 
@@ -77,8 +78,9 @@ function GroupCreated({ codigo, onDone }: { codigo: string; onDone: () => void }
         <AppText variant="display" center>
           {codigo}
         </AppText>
+        <GroupQr codigo={codigo} />
         <AppText variant="muted" center>
-          Tambien pueden escanear el QR desde la pantalla del grupo.
+          Tambien pueden escanear este QR desde la opcion Unirme a un grupo.
         </AppText>
       </Card>
       <AppButton label="Listo" onPress={onDone} />

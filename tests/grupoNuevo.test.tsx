@@ -58,6 +58,7 @@ describe("Crear grupo", () => {
     await fill("Viaje", "Ana");
     await fireEvent.press(screen.getByRole("button", { name: "Crear grupo" }));
     expect(await screen.findByText("ABC123")).toBeTruthy();
+    expect(screen.getByLabelText("Codigo QR del grupo. Codigo ABC123")).toBeTruthy();
     expect(mockCreate).toHaveBeenCalledWith("Viaje", "Ana");
     await fireEvent.press(screen.getByRole("button", { name: "Listo" }));
     expect(mockBack).toHaveBeenCalledTimes(1);
