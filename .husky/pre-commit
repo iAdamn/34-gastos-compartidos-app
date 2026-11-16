@@ -1,1 +1,7 @@
+# Busca claves en lo que se va a commitear. Si gitleaks no esta instalado, solo avisa y la CI lo revisa.
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks git --staged --redact --no-banner
+else
+  echo "gitleaks no esta instalado: se omite aqui y lo revisa la CI"
+fi
 npx lint-staged

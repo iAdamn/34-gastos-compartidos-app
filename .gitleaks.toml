@@ -1,0 +1,9 @@
+title = "Gastos compartidos (app)"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "El nombre del repo de la API en la documentacion parece una clave"
+regexTarget = "match"
+regexes = ['''34-gastos-compartidos-api''']
