@@ -46,13 +46,14 @@ export function AppButton({
 const styles = StyleSheet.create({
   button: {
     minHeight: 48,
+    minWidth: 48,
     borderRadius: radius.medium,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 18,
     paddingVertical: 12,
   },
-  compact: { minHeight: 44, paddingHorizontal: 14, paddingVertical: 8 },
+  compact: { minHeight: 44, minWidth: 44, paddingHorizontal: 14, paddingVertical: 8 },
   primary: { backgroundColor: colors.primary },
   secondary: { borderWidth: 1, borderColor: colors.primary, backgroundColor: "transparent" },
   ghost: { backgroundColor: "transparent" },
