@@ -169,6 +169,42 @@ describe("sincronizacion de un grupo", () => {
     expect(log).toContain("grupo guardado");
   });
 
+  it.each([401, 429, 500])(
+    "con un %i el gasto sigue pendiente: no se quita del telefono",
+    async (status) => {
+      const { deps, log } = fakeDeps({
+        pendingExpenses: [localExpense()],
+        postError: new ApiClientError(status, "x"),
+      });
+
+      await expect(syncGroup(deps, "g1")).rejects.toMatchObject({ status });
+      expect(log).not.toContain("gasto quitado e1");
+    },
+  );
+
+  it("con 500 gastos y pagos mas recientes, la pagina siguiente parte del ultimo gasto", async () => {
+    const fullPage = Array.from({ length: SYNC_PAGE_SIZE }, (_, index) =>
+      remoteExpense(`e${index}`, `2026-11-14T11:30:00.${String(index).padStart(3, "0")}Z`),
+    );
+    const lastExpenseAt = fullPage[fullPage.length - 1]?.updated_at;
+    const laterPayment = {
+      id: "p9",
+      de_uid: "beto",
+      a_uid: "ana",
+      monto_centavos: 100,
+      fecha: "2026-11-14T11:45:00.000Z",
+      updated_at: "2026-11-14T11:45:00.000Z",
+    };
+    const { deps, log } = fakeDeps({
+      pages: [{ ...emptyChanges(), gastos: fullPage, pagos: [laterPayment] }, emptyChanges()],
+    });
+
+    await syncGroup(deps, "g1");
+
+    const requests = log.filter((line) => line.startsWith("cambios desde"));
+    expect(requests[1]).toBe(`cambios desde ${lastExpenseAt}`);
+  });
+
   it("trae los cambios desde la ultima sincronizacion y guarda la hora del servidor", async () => {
     const changes = {
       ...emptyChanges(),

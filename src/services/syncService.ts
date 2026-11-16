@@ -42,9 +42,13 @@ export type SyncDeps = {
   savePayment: (gid: string, payment: RemotePayment) => Promise<void>;
 };
 
-// La API rechazo el dato (400, 403, 404, 409). Reintentar no sirve de nada.
+// Codigos con los que la API rechaza el dato para siempre: reintentar no sirve de nada.
+// 401 (sesion vencida) y 429 (demasiados intentos) NO estan aqui: el dato es bueno
+// y se envia despues, cuando haya sesion o pase el limite.
+const REJECTED_STATUSES = [400, 403, 404, 409, 413, 415];
+
 function isRejected(error: unknown): boolean {
-  return error instanceof ApiClientError && error.status >= 400 && error.status < 500;
+  return error instanceof ApiClientError && REJECTED_STATUSES.includes(error.status);
 }
 
 // Intenta enviar un pendiente. Devuelve "sent" si la API lo acepto y "rejected" si lo rechazo.
@@ -85,12 +89,19 @@ async function pushPayment(deps: SyncDeps, gid: string, payment: LocalPayment): 
   }
 }
 
-// El updated_at mas reciente de una lista. Sirve para pedir la pagina siguiente.
-function lastUpdatedAt(items: { updated_at: string }[], fallback: string | null): string | null {
-  return items.reduce<string | null>(
-    (latest, item) => (latest === null || item.updated_at > latest ? item.updated_at : latest),
-    fallback,
-  );
+// Desde donde pedir la pagina siguiente.
+// Solo cuentan las listas que llegaron llenas, porque son las que pueden tener mas.
+// Si las dos llegaron llenas se toma la fecha mas vieja de las dos, para no saltarse nada.
+// Volver a recibir algo ya guardado no hace dano: se guarda encima.
+function nextSince(changes: ChangesResponse, current: string | null): string | null {
+  const cursors: string[] = [];
+  for (const list of [changes.gastos, changes.pagos]) {
+    const last = list[list.length - 1];
+    if (list.length === SYNC_PAGE_SIZE && last) {
+      cursors.push(last.updated_at);
+    }
+  }
+  return cursors.sort()[0] ?? current;
 }
 
 async function pullChanges(deps: SyncDeps, gid: string): Promise<void> {
@@ -107,7 +118,7 @@ async function pullChanges(deps: SyncDeps, gid: string): Promise<void> {
     }
     hasMore = changes.gastos.length === SYNC_PAGE_SIZE || changes.pagos.length === SYNC_PAGE_SIZE;
     if (hasMore) {
-      since = lastUpdatedAt([...changes.gastos, ...changes.pagos], since);
+      since = nextSince(changes, since);
     } else {
       await deps.setLastSync(gid, changes.servidor_ahora);
     }
