@@ -70,6 +70,16 @@ describe("escanear desde Unirse", () => {
     mockPermission.mockResolvedValue(permission(true));
   });
 
+  it("en Android y iOS, donde isAvailableAsync no existe y lanza error, igual abre la camara", async () => {
+    // Asi responde expo-camera en un telefono: el metodo solo esta hecho para web.
+    mockAvailable.mockRejectedValue(new Error("expo-camera.isAvailableAsync is not available"));
+
+    await startScanner();
+
+    expect(mockPermission).toHaveBeenCalledTimes(1);
+    expect(await screen.findByTestId("camara-qr")).toBeTruthy();
+  });
+
   it("explica para que es la camara y no pide permiso al abrir", async () => {
     await render(<Unirse />);
     expect(screen.getByText("La camara solo se usa para leer el QR del grupo")).toBeTruthy();
@@ -102,8 +112,10 @@ describe("escanear desde Unirse", () => {
     expect(screen.getByLabelText("Codigo del grupo")).toBeTruthy();
   });
 
-  it("si revisar la camara falla no se rompe", async () => {
-    mockAvailable.mockRejectedValue(new Error("modulo nativo"));
+  // Antes esta prueba hacia fallar isAvailableAsync y esperaba "no tiene camara". Eso daba por
+  // bueno un error: en un telefono ese metodo siempre falla. El caso real de fallo es el permiso.
+  it("si pedir el permiso de la camara falla no se rompe", async () => {
+    mockPermission.mockRejectedValue(new Error("modulo nativo"));
     await startScanner();
     expect(
       await screen.findByText("Este telefono no tiene camara. Escribe el codigo."),

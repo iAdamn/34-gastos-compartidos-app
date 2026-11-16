@@ -1,5 +1,6 @@
 import { Camera, CameraView } from "expo-camera";
 import { useState } from "react";
+import { Platform } from "react-native";
 
 import { isValidGroupCode, normalizeGroupCode } from "@/domain/groupCode";
 
@@ -13,6 +14,17 @@ export function parseGroupQr(data: string): string | null {
   return isValidGroupCode(code) ? code : null;
 }
 
+// Revisa si hay camara. CameraView.isAvailableAsync solo esta hecho para web: en Android y iOS
+// lanza un error de "no disponible en esta plataforma". En el telefono ese error no significa
+// que falte la camara, asi que se sigue y el permiso decide.
+async function hasCamera(): Promise<boolean> {
+  try {
+    return await CameraView.isAvailableAsync();
+  } catch {
+    return Platform.OS !== "web";
+  }
+}
+
 // Sensor 1: la camara para leer el QR de un grupo.
 // Revisa si hay camara y pide el permiso solo cuando el usuario toca "Escanear".
 export function useQrScanner(onCode: (codigo: string) => void) {
@@ -23,7 +35,7 @@ export function useQrScanner(onCode: (codigo: string) => void) {
     setInvalid(false);
     setStatus("checking");
     try {
-      if (!(await CameraView.isAvailableAsync())) {
+      if (!(await hasCamera())) {
         setStatus("unavailable");
         return;
       }
