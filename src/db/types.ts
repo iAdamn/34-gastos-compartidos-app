@@ -7,4 +7,6 @@ export type Db = {
   runAsync: (sql: string, params?: SqlParam[]) => Promise<unknown>;
   getAllAsync: <T>(sql: string, params?: SqlParam[]) => Promise<T[]>;
   getFirstAsync: <T>(sql: string, params?: SqlParam[]) => Promise<T | null>;
+  // Ejecuta varias escrituras como una sola: o se guardan todas o no se guarda ninguna.
+  withTransactionAsync: (task: () => Promise<void>) => Promise<void>;
 };

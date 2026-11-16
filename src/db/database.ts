@@ -15,6 +15,7 @@ function toDb(sqlite: SQLite.SQLiteDatabase): Db {
     getAllAsync: <T>(sql: string, params: SqlParam[] = []) => sqlite.getAllAsync<T>(sql, params),
     getFirstAsync: <T>(sql: string, params: SqlParam[] = []) =>
       sqlite.getFirstAsync<T>(sql, params),
+    withTransactionAsync: (task) => sqlite.withTransactionAsync(task),
   };
 }
 

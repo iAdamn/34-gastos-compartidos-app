@@ -4,7 +4,12 @@ import type { LocalGroup, Member, RemoteGroup } from "@/types";
 // Todo el SQL de grupos y miembros. Siempre con parametros (?), nunca pegando texto.
 
 // Guarda o actualiza un grupo que llego de la API, con sus miembros.
-export async function upsertGroup(db: Db, group: RemoteGroup): Promise<void> {
+// Va en una transaccion: si algo falla a mitad de camino el grupo no queda sin miembros.
+export function upsertGroup(db: Db, group: RemoteGroup): Promise<void> {
+  return db.withTransactionAsync(() => writeGroup(db, group));
+}
+
+async function writeGroup(db: Db, group: RemoteGroup): Promise<void> {
   await db.runAsync(
     `INSERT INTO grupo_cache (id, nombre, codigo, creador_uid) VALUES (?, ?, ?, ?)
      ON CONFLICT(id) DO UPDATE SET nombre = excluded.nombre, codigo = excluded.codigo`,

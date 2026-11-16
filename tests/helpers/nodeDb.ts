@@ -19,5 +19,15 @@ export function createNodeDb(): Db {
       sqlite.prepare(sql).all(...params) as T[],
     getFirstAsync: async <T>(sql: string, params: SqlParam[] = []) =>
       (sqlite.prepare(sql).get(...params) as T | undefined) ?? null,
+    withTransactionAsync: async (task) => {
+      sqlite.exec("BEGIN");
+      try {
+        await task();
+        sqlite.exec("COMMIT");
+      } catch (error) {
+        sqlite.exec("ROLLBACK");
+        throw error;
+      }
+    },
   };
 }

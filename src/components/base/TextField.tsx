@@ -30,7 +30,12 @@ export function TextField({ label, error, ...inputProps }: Props) {
         onBlur={() => setFocused(false)}
         style={[styles.input, focused && styles.focused, error ? styles.inputError : null]}
       />
-      {error ? <AppText variant="error">{error}</AppText> : null}
+      {error ? (
+        // El lector de pantalla anuncia el error apenas aparece.
+        <View accessible accessibilityRole="alert" accessibilityLiveRegion="polite">
+          <AppText variant="error">{error}</AppText>
+        </View>
+      ) : null}
     </View>
   );
 }

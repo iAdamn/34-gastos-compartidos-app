@@ -100,6 +100,15 @@ describe("grupos", () => {
     expect(await groups.getLastSync(db, "g1")).toBe("2026-11-14T12:00:00.000Z");
   });
 
+  it("si falla a mitad de camino no deja el grupo sin miembros", async () => {
+    // Un miembro repetido rompe la llave primaria en el segundo INSERT.
+    const broken = { ...group, miembros: ["ana", "ana"] };
+
+    await expect(groups.upsertGroup(db, broken)).rejects.toThrow();
+
+    expect(await groups.listMembers(db, "g1")).toHaveLength(2);
+  });
+
   it("al cerrar sesion se borra todo", async () => {
     await expenses.insertPendingExpense(db, localExpense());
 
@@ -163,6 +172,18 @@ describe("gastos", () => {
     expect(await expenses.listExpenses(db, "g1", "taxi")).toHaveLength(1);
     expect(await expenses.listExpenses(db, "g1", "' OR 1=1 --")).toEqual([]);
     expect(await expenses.listExpenses(db, "g1")).toHaveLength(2);
+  });
+
+  it("en la busqueda % y _ son texto normal, no comodines", async () => {
+    await expenses.insertPendingExpense(db, localExpense());
+    await expenses.insertPendingExpense(
+      db,
+      localExpense({ id: "e2", descripcion: "Propina 10% del_mesero" }),
+    );
+
+    expect(await expenses.listExpenses(db, "g1", "%")).toHaveLength(1);
+    expect(await expenses.listExpenses(db, "g1", "_")).toHaveLength(1);
+    expect(await expenses.listExpenses(db, "g1", "10%")).toHaveLength(1);
   });
 
   it("quita un gasto que nunca se envio", async () => {

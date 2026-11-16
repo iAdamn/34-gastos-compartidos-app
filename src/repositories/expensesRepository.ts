@@ -40,13 +40,18 @@ function toExpense(row: ExpenseRow): LocalExpense {
   };
 }
 
+// En un LIKE los signos % y _ son comodines. Se escapan para buscarlos como texto normal.
+function escapeLike(text: string): string {
+  return text.replace(/[\\%_]/g, (character) => `\\${character}`);
+}
+
 // Gastos visibles de un grupo. Con texto busca en la descripcion.
 export async function listExpenses(db: Db, gid: string, search = ""): Promise<LocalExpense[]> {
   const rows = await db.getAllAsync<ExpenseRow>(
     `SELECT ${COLUMNS} FROM gasto_cache
-     WHERE grupo_id = ? AND deleted = 0 AND descripcion LIKE ?
+     WHERE grupo_id = ? AND deleted = 0 AND descripcion LIKE ? ESCAPE '\\'
      ORDER BY fecha DESC, id`,
-    [gid, `%${search}%`],
+    [gid, `%${escapeLike(search)}%`],
   );
   return rows.map(toExpense);
 }
