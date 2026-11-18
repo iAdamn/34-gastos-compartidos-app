@@ -95,7 +95,13 @@ El APK se genera con EAS Build, perfil `preview` de `eas.json`, que ya trae la U
 eas build -p android --profile preview
 ```
 
-Enlace de descarga: pendiente: las agrega la persona.
+Version entregada: build 6 (versionCode 6), probada en un telefono Android contra la API desplegada.
+
+- Descarga directa del APK: https://expo.dev/artifacts/eas/fhChGMeWMlMncfcXtjEI2RD1WmRP7QcC6QF-Vw2mR1w.apk
+- Pagina del build en EAS: https://expo.dev/accounts/adnsupreme/projects/34-gastos-compartidos-app/builds/092bd8e8-779b-4f8a-9acf-fcc86df0c0ef
+
+Para instalarlo hay que permitir apps de origenes desconocidos en el telefono. La API que usa es
+https://34-gastos-compartidos-api.vercel.app
 
 ## Capturas
 
