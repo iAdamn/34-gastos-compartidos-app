@@ -1,0 +1,9 @@
+# Configuracion de Codex CLI para este repo. Codex la carga solo si el proyecto es de confianza.
+# Codex ya lee AGENTS.md por su cuenta.
+# workspace-write: puede editar solo dentro del repo. on-request: pide permiso para lo demas.
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+
+[sandbox_workspace_write]
+# Sin red desde los comandos que ejecuta: nada de curl ni descargas.
+network_access = false

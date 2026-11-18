@@ -19,6 +19,27 @@ La configuracion esta activa desde el primer commit de este repo.
 
 El docente descarto el sandbox y WSL2, por eso no hay nada de sandbox en settings.json.
 
+## Otras herramientas de IA
+
+Las reglas no son solo para Claude Code. `AGENTS.md` es el formato comun que leen varias herramientas, y cada
+una tiene ademas su archivo de configuracion en el repo. La sintaxis se tomo de la documentacion oficial de
+cada herramienta (OpenCode 1.19, Gemini CLI y Codex CLI, consultadas el 2026-11-18).
+
+| Herramienta    | Lee las reglas                           | Configuracion en el repo                           | Que hace cumplir                                                                                                                                                                                                                                  | Limite                                                                                                          |
+| -------------- | ---------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Claude Code    | `CLAUDE.md` importa `AGENTS.md`          | `.claude/settings.json` y hook `ia/hook/guard.mjs` | Todo lo de la tabla de barreras                                                                                                                                                                                                                   | Probado con las 10 pruebas de contencion                                                                        |
+| OpenCode       | `AGENTS.md` (lo lee solo)                | `opencode.json`                                    | Niega leer y editar `.env*` y claves, editar la configuracion de la IA, salir de la carpeta (`external_directory`) y comandos como `curl`, `wget`, `sudo`, `rm -rf`, `git push --force`; pide permiso para `git push`, instalar, `vercel` y `eas` | Gana la ultima regla que coincide. Los comandos se comparan como texto, igual que el hook                       |
+| Codex CLI      | `AGENTS.md` (lo lee solo)                | `.codex/config.toml`                               | Sandbox `workspace-write` (solo escribe dentro del repo), pide permiso para lo demas y sin red en los comandos                                                                                                                                    | Solo carga la configuracion si se marca el proyecto como de confianza                                           |
+| Gemini CLI     | `AGENTS.md`, por `.gemini/settings.json` | `.gemini/settings.json`                            | Carga las reglas de `AGENTS.md`                                                                                                                                                                                                                   | Gemini no permite bloquear comandos desde el repo: sus politicas de proyecto no funcionan todavia. Solo orienta |
+| Cursor y otras | `AGENTS.md`                              | ninguna                                            | Orientan las reglas escritas                                                                                                                                                                                                                      | No hay barrera tecnica desde el repo                                                                            |
+
+Lo que no se pudo comprobar: OpenCode, Codex y Gemini no estan instalados en esta maquina y no se instalaron
+herramientas globales sin permiso. Se valido que los archivos son JSON y TOML correctos, no que cada
+herramienta los aplique. La prueba en vivo de la sustentacion se hace con Claude Code.
+
+La configuracion de Claude Code (regla deny y hook) protege `.claude` e `ia/hook`, pero no `opencode.json`,
+`.gemini` ni `.codex`. `AGENTS.md` prohibe editarlos y `opencode.json` se protege a si mismo en OpenCode.
+
 ## Comprobado
 
 Con las pruebas de contencion reales del 2026-11-16 y 2026-11-18 (detalle en `ia/PRUEBAS-CONTENCION.md`).

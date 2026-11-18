@@ -1,5 +1,10 @@
 # AGENTS.md - App de gastos compartidos (proyecto 34)
 
+## Para cualquier IA
+
+Estas reglas valen para cualquier asistente: Claude Code, OpenCode, Codex, Gemini CLI, Cursor u otro.
+Cada herramienta tiene ademas su configuracion en el repo (ver ia/CONFIGURACION.md).
+
 ## Proyecto
 
 App movil para grupos de amigos que registran gastos en comun. La app calcula quien le debe a quien con la menor cantidad de pagos.
@@ -57,7 +62,7 @@ El enunciado del docente esta en docs/enunciado.md y manda sobre todo lo demas.
 - Poner credenciales o firebaseConfig en la app. La app solo conoce EXPO_PUBLIC_API_URL
 - Guardar tokens en AsyncStorage
 - Salir de la carpeta de este repo
-- Editar la carpeta .claude
+- Editar la configuracion de la IA: .claude, opencode.json, .gemini, .codex e ia/hook
 - Instalar dependencias sin avisar y sin revisar que el paquete existe en npmjs.com
 - git push, eas y vercel sin permiso
 - Usar curl, wget, sudo, rm -rf, git push --force o git reset --hard
