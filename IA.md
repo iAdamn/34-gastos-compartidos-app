@@ -6,7 +6,7 @@
 - Pruebas de contencion: ia/PRUEBAS-CONTENCION.md (ejecutadas de verdad el 2026-11-16 y 2026-11-18, con linea base sin configuracion; faltan las capturas de pantalla)
 - Documento trampa para la prueba de inyeccion: docs/trampa.md
 - Bitacora: ia/BITACORA.md
-- Calidad automatica:
+- Calidad automatica (salida real de `npm run check`, cobertura y enlace a la CI: ia/CALIDAD.md):
   - `npm run check`: tipos, lint (funciones de maximo 50 lineas, complejidad maxima 10, sin `any`), formato, pruebas con cobertura y pruebas del hook
   - Husky: `pre-commit` corre gitleaks sobre lo que se va a commitear (si esta instalado) y lint-staged sobre lo modificado y `pre-push` corre `npm run check`
   - CI de GitHub Actions: `.github/workflows/ci.yml` (check, expo-doctor, busqueda de secretos, `npm audit` y gitleaks sobre todo el historial). Enlace: https://github.com/iAdamn/34-gastos-compartidos-app/actions
