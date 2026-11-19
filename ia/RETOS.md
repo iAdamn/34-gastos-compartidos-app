@@ -30,4 +30,4 @@ Version usada: gitleaks 8.30.1. Se descargo el binario oficial de los releases d
 - Con gitleaks disponible, el hook detecto la clave (`leaks found: 1`) y termino con codigo de salida 1: el commit se habria bloqueado.
 - Sin gitleaks en el PATH, el hook avisa "gitleaks no esta instalado" y deja pasar. Es el limite conocido: en un equipo sin gitleaks la defensa es la CI.
 - **Error durante la prueba:** la primera vez se hizo un control sin gitleaks con un commit real y la clave falsa quedo commiteada en local (no se subio). Se quito con `git reset --soft HEAD~1` y se volvio a crear el commit de otra sesion que habia quedado encima, con su mismo mensaje y autor. Se comprobo que el historial ya no contiene la clave falsa. Lo correcto era probar el hook sin hacer commit, como se hizo despues.
-- **Pendiente:** el trabajo `secretos` de la CI no se ha visto correr, porque requiere un `git push` y eso lo autoriza la persona. Hay que revisar en la pestana Actions que quede en verde.
+- El trabajo `secretos` de la CI ya corrio despues del push del 2026-11-18 y quedo en verde en GitHub Actions.

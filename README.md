@@ -102,7 +102,3 @@ Version entregada: build 6 (versionCode 6), probada en un telefono Android contr
 
 Para instalarlo hay que permitir apps de origenes desconocidos en el telefono. La API que usa es
 https://34-gastos-compartidos-api.vercel.app
-
-## Capturas
-
-Pendiente: las agrega la persona.
