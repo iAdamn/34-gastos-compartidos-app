@@ -5,6 +5,18 @@ Un grupo de amigos registra sus gastos y la app calcula quien le debe a quien.
 
 Hecha con Expo, React Native, TypeScript y Expo Router. La API esta en el repo `34-gastos-compartidos-api`.
 
+## Capturas
+
+Tomadas en un telefono Android con el APK de la build 7, contra la API desplegada.
+
+| Iniciar sesion                                                                        | Mis grupos                                                                    | Grupo recien creado (codigo y QR)                                                          | Unirse (QR o codigo)                                                             |
+| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| <img src="docs/capturas/01-login.jpg" width="200" alt="Pantalla de inicio de sesion"> | <img src="docs/capturas/02-mis-grupos.jpg" width="200" alt="Lista de grupos"> | <img src="docs/capturas/03-crear-grupo-qr.jpg" width="200" alt="Grupo con su codigo y QR"> | <img src="docs/capturas/04-unirse.jpg" width="200" alt="Unirse con QR o codigo"> |
+
+| Balance y pagos sugeridos                                                                  | Registrar gasto                                                                        | Sin conexion                                                                       | Gastos y sorteo por sacudida                                                                |
+| ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| <img src="docs/capturas/05-grupo-balance.jpg" width="200" alt="Balance y pagos sugeridos"> | <img src="docs/capturas/06-registrar-gasto.jpg" width="200" alt="Formulario de gasto"> | <img src="docs/capturas/07-sin-conexion.jpg" width="200" alt="Aviso sin conexion"> | <img src="docs/capturas/08-gastos-y-sorteo.jpg" width="200" alt="Lista de gastos y sorteo"> |
+
 ## Como instalar y correr
 
 Hace falta Node 22.5 o mayor (las pruebas de los repositorios usan `node:sqlite`; la CI usa Node 24).
