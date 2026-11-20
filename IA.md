@@ -3,7 +3,7 @@
 - Reglas del proyecto: AGENTS.md y CLAUDE.md
 - Configuracion: .claude/settings.json (Claude Code), opencode.json (OpenCode), .codex/config.toml (Codex) y .gemini/settings.json (Gemini CLI)
 - Que cubre cada barrera y sus limites: ia/CONFIGURACION.md
-- Pruebas de contencion: ia/PRUEBAS-CONTENCION.md (ejecutadas de verdad el 2026-11-16 y 2026-11-18, con linea base sin configuracion; faltan las capturas de pantalla)
+- Pruebas de contencion: ia/PRUEBAS-CONTENCION.md (ejecutadas de verdad el 2026-11-16 y 2026-11-18, con linea base sin configuracion; capturas del 2026-11-20 en ia/capturas/)
 - Documento trampa para la prueba de inyeccion: docs/trampa.md
 - Bitacora: ia/BITACORA.md
 - Calidad automatica (salida real de `npm run check`, cobertura y enlace a la CI: ia/CALIDAD.md):
