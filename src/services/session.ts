@@ -3,7 +3,7 @@ import * as SecureStore from "expo-secure-store";
 import type { TokenStore, Tokens } from "@/api/client";
 import type { SessionUser } from "@/types";
 
-// La sesion se guarda en expo-secure-store (Keychain o Keystore), nunca en AsyncStorage.
+// La sesion se guarda en expo-secure-store (Keychain o Keystore), nunca en almacenamiento sin cifrar.
 const TOKEN_KEY = "token";
 const REFRESH_KEY = "refreshToken";
 const USER_KEY = "usuario";
