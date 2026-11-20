@@ -2,7 +2,7 @@
 
 - Fase: app completa y cerrando documentos. Proyecto individual. Fecha limite: sabado 2026-11-21.
 - Repo: https://github.com/iAdamn/34-gastos-compartidos-app (publico, CI de GitHub Actions: https://github.com/iAdamn/34-gastos-compartidos-app/actions).
-- API: https://34-gastos-compartidos-api.vercel.app (la URL esta en `eas.json`, perfil `preview`). APK de EAS; `versionCode` actual en `app.json`: 6.
+- API: https://34-gastos-compartidos-api.vercel.app (la URL esta en `eas.json`, perfil `preview`). APK de EAS; `versionCode` actual en `app.json`: 7.
 - Calidad: `npm run check` en verde con 200 pruebas de Jest y 16 del hook. Husky corre lint-staged y gitleaks (si esta instalado) al commitear y `npm run check` al hacer push.
 
 ## Que hay
@@ -16,9 +16,7 @@
 
 ## Que falta
 
-- De la persona: capturas para el README, video de la APK (A25), canario y las 10 pruebas de contencion con capturas (C2, C5), ensayo de la sustentacion (C9).
-- Revisiones por otro chat: A12, A17, A23, A28 y C8. Redactar las evidencias con los resultados reales (C6).
-- El trabajo `secretos` (gitleaks) de la CI esta escrito pero no se ha visto correr: necesita un `git push`, que autoriza la persona.
+- De la persona: ensayo de la sustentacion (C9).
 
 ## Decisiones vigentes
 
